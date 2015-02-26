@@ -1,0 +1,35 @@
+# -*- coding: utf-8 -*-
+
+# Define your item pipelines here
+#
+# Don't forget to add your pipeline to the ITEM_PIPELINES setting
+# See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
+from ampqlib import client_0_8 as amqp
+
+
+class EjobsPipeline(object):
+
+    def __init__(self):
+
+        lConnection = amqp.Connection(
+            host="azyl13.no-ip.org:5672", userid="azyl", password="azyl",
+            virtual_host="/", insist=False)
+        lChannel = lConnection.channel()
+
+        lChannel.queue_declare(
+            queue="JobAdsQueue", durable=True, exclusive=False,
+            auto_delete=False)
+        lChannel.exchange_declare(
+            exchange="JobAdsExchange", type="direct", durable=True,
+            auto_delete=False)
+        lChannel.queue_bind(queue="JobAdsQueue", exchange="JobAdsExchange",
+                            routing_key="JobAds")
+
+    def process_item(self, item, spider):
+
+        lMessage = amqp.Message("Test message!")
+        lMessage.properties["delivery_mode"] = 2
+        self.lChannel.basic_publish(lMessage, exchange="myExchange",
+        routing_key="Test")
+
+        return item
