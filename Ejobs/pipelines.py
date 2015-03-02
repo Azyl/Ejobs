@@ -24,6 +24,7 @@ class MessageQueuePipeline(object):
         dispatcher.connect(self.spider_opened, signals.spider_opened)
         dispatcher.connect(self.spider_closed, signals.spider_closed)
 
+
     @classmethod
     def from_settings(cls, settings):
         host_name = settings.get('BROKER_HOST')
@@ -38,7 +39,7 @@ class MessageQueuePipeline(object):
         self.q_connection.connect()
         self.exchange = self.exchange(self.q_connection.channel())
         self.exchange.declare()
-        self.queue = kombu.entity.Queue(name='JobAdsP', exchange=self.exchange)
+        self.queue = kombu.entity.Queue(name='JobAdsP', exchange=self.exchange, routing_key=spider.name)
         self.queue = self.queue(self.q_connection.channel())
         self.queue.declare()
         # self.producer = self.q_connection.Producer(exchange=self.exchange, routing_key=spider.name)
@@ -49,7 +50,10 @@ class MessageQueuePipeline(object):
         self.q_connection._close()
 
     def process_item(self, item, spider):
-        return deferToThread(self._process_item, item, spider)
+        # return deferToThread(self._process_item, item, spider)
+        self.producer.publish(body=dict(item), routing_key=spider.name)
+        print str(item)
+        return item
 
     def _process_item(self, item, spider):
 
@@ -61,9 +65,10 @@ class MessageQueuePipeline(object):
         #     self.producer.publish(body=dict(item))
         #     return item
 
-        self.producer.publish(body=dict(item))
-        print str(item)
-        return item
+        # self.producer.publish(body=dict(item))
+        # print str(item)
+        # return item
+        pass
 
 
 
