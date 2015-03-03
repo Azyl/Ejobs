@@ -28,6 +28,11 @@ class EjobsJobAdscrapperItem(scrapy.Item):
     JobAdApplicantsNr = scrapy.Field()
     JobAdDescription = scrapy.Field()
     JobAdSelectionCriteria = scrapy.Field()
+    JobAdDescriptionImage = scrapy.Field()
+
+    # 1 normal Ejobs text add
+    # 2 picture custom picture add
+    JobAdType = scrapy.Field()
 
 
 class EjobsScrappedJobAdItems(scrapy.Item):
