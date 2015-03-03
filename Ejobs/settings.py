@@ -27,7 +27,7 @@ AUTOTHROTTLE_DEBUG = True
 
 LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
-LOG_FILE = 'Ejob.log'
+# LOG_FILE = 'Ejob.log'
 
 ITEM_PIPELINES = [
         'Ejobs.pipelines.MessageQueuePipeline',

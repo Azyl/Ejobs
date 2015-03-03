@@ -9457,3 +9457,437 @@
 	 'scheduler/enqueued/memory': 11,
 	 'start_time': datetime.datetime(2015, 3, 2, 9, 18, 58, 233200)}
 2015-03-02 11:19:08+0200 [LinkSpider] INFO: Spider closed (finished)
+2015-03-03 14:05:13+0200 [scrapy] INFO: Scrapy 0.24.5 started (bot: Ejobs)
+2015-03-03 14:05:13+0200 [scrapy] INFO: Optional features available: ssl, http11, django
+2015-03-03 14:05:13+0200 [scrapy] INFO: Overridden settings: {'NEWSPIDER_MODULE': 'Ejobs.spiders', 'SPIDER_MODULES': ['Ejobs.spiders'], 'LOG_FILE': 'Ejob.log', 'BOT_NAME': 'Ejobs'}
+2015-03-03 14:05:14+0200 [scrapy] INFO: Enabled extensions: AutoThrottle, LogStats, TelnetConsole, CloseSpider, WebService, CoreStats, SpiderState
+2015-03-03 14:05:15+0200 [scrapy] INFO: Enabled downloader middlewares: HttpAuthMiddleware, DownloadTimeoutMiddleware, UserAgentMiddleware, RetryMiddleware, DefaultHeadersMiddleware, MetaRefreshMiddleware, HttpCompressionMiddleware, RedirectMiddleware, CookiesMiddleware, ChunkedTransferMiddleware, DownloaderStats
+2015-03-03 14:05:15+0200 [scrapy] INFO: Enabled spider middlewares: HttpErrorMiddleware, OffsiteMiddleware, RefererMiddleware, UrlLengthMiddleware, DepthMiddleware
+2015-03-03 14:05:15+0200 [scrapy] INFO: Enabled item pipelines: MessageQueuePipeline
+2015-03-03 14:05:15+0200 [LinkSpiderDetails] INFO: Spider opened
+2015-03-03 14:05:15+0200 [LinkSpiderDetails] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2015-03-03 14:05:20+0200 [LinkSpiderDetails] ERROR: Error caught on signal handler: <bound method ?.spider_opened of <Ejobs.pipelines.MessageQueuePipeline object at 0x00000000056883C8>>
+	Traceback (most recent call last):
+	  File "D:\python27\lib\site-packages\twisted\internet\defer.py", line 1107, in _inlineCallbacks
+	    result = g.send(result)
+	  File "D:\python27\lib\site-packages\scrapy\core\engine.py", line 232, in open_spider
+	    yield self.signals.send_catch_log_deferred(signals.spider_opened, spider=spider)
+	  File "D:\python27\lib\site-packages\scrapy\signalmanager.py", line 23, in send_catch_log_deferred
+	    return signal.send_catch_log_deferred(*a, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\utils\signal.py", line 53, in send_catch_log_deferred
+	    *arguments, **named)
+	--- <exception caught here> ---
+	  File "D:\python27\lib\site-packages\twisted\internet\defer.py", line 140, in maybeDeferred
+	    result = f(*args, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\xlib\pydispatch\robustapply.py", line 54, in robustApply
+	    return receiver(*arguments, **named)
+	  File "C:\Users\IBM_ADMIN\PycharmProjects\Ejobs\Ejobs\pipelines.py", line 39, in spider_opened
+	    self.q_connection.connect()
+	  File "D:\python27\lib\site-packages\kombu\connection.py", line 237, in connect
+	    return self.connection
+	  File "D:\python27\lib\site-packages\kombu\connection.py", line 741, in connection
+	    self._connection = self._establish_connection()
+	  File "D:\python27\lib\site-packages\kombu\connection.py", line 696, in _establish_connection
+	    conn = self.transport.establish_connection()
+	  File "D:\python27\lib\site-packages\kombu\transport\pyamqp.py", line 112, in establish_connection
+	    conn = self.Connection(**opts)
+	  File "D:\python27\lib\site-packages\amqp\connection.py", line 165, in __init__
+	    self.transport = self.Transport(host, connect_timeout, ssl)
+	  File "D:\python27\lib\site-packages\amqp\connection.py", line 186, in Transport
+	    return create_transport(host, connect_timeout, ssl)
+	  File "D:\python27\lib\site-packages\amqp\transport.py", line 299, in create_transport
+	    return TCPTransport(host, connect_timeout)
+	  File "D:\python27\lib\site-packages\amqp\transport.py", line 95, in __init__
+	    raise socket.error(last_err)
+	socket.error: timed out
+	
+2015-03-03 14:05:21+0200 [scrapy] DEBUG: Telnet console listening on 127.0.0.1:6023
+2015-03-03 14:05:21+0200 [scrapy] DEBUG: Web service listening on 127.0.0.1:6080
+2015-03-03 14:05:22+0200 [LinkSpiderDetails] INFO: slot: wwww.ejobs.ro | conc: 1 | delay: 2875 ms (-2125) | latency:  750 ms | size: 38377 bytes
+2015-03-03 14:05:22+0200 [LinkSpiderDetails] DEBUG: Crawled (200) <GET http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=> (referer: None)
+2015-03-03 14:05:22+0200 [LinkSpiderDetails] INFO: Closing spider (finished)
+2015-03-03 14:05:22+0200 [LinkSpiderDetails] ERROR: Error caught on signal handler: <bound method ?.spider_closed of <Ejobs.pipelines.MessageQueuePipeline object at 0x00000000056883C8>>
+	Traceback (most recent call last):
+	  File "D:\python27\lib\site-packages\twisted\internet\defer.py", line 578, in _runCallbacks
+	    current.result = callback(current.result, *args, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\core\engine.py", line 275, in <lambda>
+	    spider=spider, reason=reason, spider_stats=self.crawler.stats.get_stats()))
+	  File "D:\python27\lib\site-packages\scrapy\signalmanager.py", line 23, in send_catch_log_deferred
+	    return signal.send_catch_log_deferred(*a, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\utils\signal.py", line 53, in send_catch_log_deferred
+	    *arguments, **named)
+	--- <exception caught here> ---
+	  File "D:\python27\lib\site-packages\twisted\internet\defer.py", line 140, in maybeDeferred
+	    result = f(*args, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\xlib\pydispatch\robustapply.py", line 54, in robustApply
+	    return receiver(*arguments, **named)
+	  File "C:\Users\IBM_ADMIN\PycharmProjects\Ejobs\Ejobs\pipelines.py", line 49, in spider_closed
+	    self.producer.close()
+	exceptions.AttributeError: 'MessageQueuePipeline' object has no attribute 'producer'
+	
+2015-03-03 14:05:22+0200 [LinkSpiderDetails] INFO: Dumping Scrapy stats:
+	{'downloader/request_bytes': 330,
+	 'downloader/request_count': 1,
+	 'downloader/request_method_count/GET': 1,
+	 'downloader/response_bytes': 39187,
+	 'downloader/response_count': 1,
+	 'downloader/response_status_count/200': 1,
+	 'finish_reason': 'finished',
+	 'finish_time': datetime.datetime(2015, 3, 3, 12, 5, 22, 106000),
+	 'log_count/DEBUG': 3,
+	 'log_count/ERROR': 2,
+	 'log_count/INFO': 8,
+	 'response_received_count': 1,
+	 'scheduler/dequeued': 1,
+	 'scheduler/dequeued/memory': 1,
+	 'scheduler/enqueued': 1,
+	 'scheduler/enqueued/memory': 1,
+	 'start_time': datetime.datetime(2015, 3, 3, 12, 5, 15, 986000)}
+2015-03-03 14:05:22+0200 [LinkSpiderDetails] INFO: Spider closed (finished)
+2015-03-03 14:08:06+0200 [scrapy] INFO: Scrapy 0.24.5 started (bot: Ejobs)
+2015-03-03 14:08:06+0200 [scrapy] INFO: Optional features available: ssl, http11, django
+2015-03-03 14:08:06+0200 [scrapy] INFO: Overridden settings: {'NEWSPIDER_MODULE': 'Ejobs.spiders', 'SPIDER_MODULES': ['Ejobs.spiders'], 'LOG_FILE': 'Ejob.log', 'BOT_NAME': 'Ejobs'}
+2015-03-03 14:08:06+0200 [scrapy] INFO: Enabled extensions: AutoThrottle, LogStats, TelnetConsole, CloseSpider, WebService, CoreStats, SpiderState
+2015-03-03 14:08:07+0200 [scrapy] INFO: Enabled downloader middlewares: HttpAuthMiddleware, DownloadTimeoutMiddleware, UserAgentMiddleware, RetryMiddleware, DefaultHeadersMiddleware, MetaRefreshMiddleware, HttpCompressionMiddleware, RedirectMiddleware, CookiesMiddleware, ChunkedTransferMiddleware, DownloaderStats
+2015-03-03 14:08:07+0200 [scrapy] INFO: Enabled spider middlewares: HttpErrorMiddleware, OffsiteMiddleware, RefererMiddleware, UrlLengthMiddleware, DepthMiddleware
+2015-03-03 14:08:07+0200 [scrapy] INFO: Enabled item pipelines: MessageQueuePipeline
+2015-03-03 14:08:07+0200 [LinkSpiderDetails] INFO: Spider opened
+2015-03-03 14:08:07+0200 [LinkSpiderDetails] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2015-03-03 14:08:12+0200 [LinkSpiderDetails] ERROR: Error caught on signal handler: <bound method ?.spider_opened of <Ejobs.pipelines.MessageQueuePipeline object at 0x00000000056A40B8>>
+	Traceback (most recent call last):
+	  File "D:\python27\lib\site-packages\twisted\internet\defer.py", line 1107, in _inlineCallbacks
+	    result = g.send(result)
+	  File "D:\python27\lib\site-packages\scrapy\core\engine.py", line 232, in open_spider
+	    yield self.signals.send_catch_log_deferred(signals.spider_opened, spider=spider)
+	  File "D:\python27\lib\site-packages\scrapy\signalmanager.py", line 23, in send_catch_log_deferred
+	    return signal.send_catch_log_deferred(*a, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\utils\signal.py", line 53, in send_catch_log_deferred
+	    *arguments, **named)
+	--- <exception caught here> ---
+	  File "D:\python27\lib\site-packages\twisted\internet\defer.py", line 140, in maybeDeferred
+	    result = f(*args, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\xlib\pydispatch\robustapply.py", line 54, in robustApply
+	    return receiver(*arguments, **named)
+	  File "C:\Users\IBM_ADMIN\PycharmProjects\Ejobs\Ejobs\pipelines.py", line 39, in spider_opened
+	    self.q_connection.connect()
+	  File "D:\python27\lib\site-packages\kombu\connection.py", line 237, in connect
+	    return self.connection
+	  File "D:\python27\lib\site-packages\kombu\connection.py", line 741, in connection
+	    self._connection = self._establish_connection()
+	  File "D:\python27\lib\site-packages\kombu\connection.py", line 696, in _establish_connection
+	    conn = self.transport.establish_connection()
+	  File "D:\python27\lib\site-packages\kombu\transport\pyamqp.py", line 112, in establish_connection
+	    conn = self.Connection(**opts)
+	  File "D:\python27\lib\site-packages\amqp\connection.py", line 165, in __init__
+	    self.transport = self.Transport(host, connect_timeout, ssl)
+	  File "D:\python27\lib\site-packages\amqp\connection.py", line 186, in Transport
+	    return create_transport(host, connect_timeout, ssl)
+	  File "D:\python27\lib\site-packages\amqp\transport.py", line 299, in create_transport
+	    return TCPTransport(host, connect_timeout)
+	  File "D:\python27\lib\site-packages\amqp\transport.py", line 95, in __init__
+	    raise socket.error(last_err)
+	socket.error: timed out
+	
+2015-03-03 14:08:12+0200 [scrapy] DEBUG: Telnet console listening on 127.0.0.1:6023
+2015-03-03 14:08:12+0200 [scrapy] DEBUG: Web service listening on 127.0.0.1:6080
+2015-03-03 14:08:13+0200 [LinkSpiderDetails] INFO: slot: wwww.ejobs.ro | conc: 1 | delay: 2646 ms (-2353) | latency:  292 ms | size: 38393 bytes
+2015-03-03 14:08:13+0200 [LinkSpiderDetails] DEBUG: Crawled (200) <GET http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=> (referer: None)
+2015-03-03 14:08:13+0200 [LinkSpiderDetails] INFO: Closing spider (finished)
+2015-03-03 14:08:13+0200 [LinkSpiderDetails] ERROR: Error caught on signal handler: <bound method ?.spider_closed of <Ejobs.pipelines.MessageQueuePipeline object at 0x00000000056A40B8>>
+	Traceback (most recent call last):
+	  File "D:\python27\lib\site-packages\twisted\internet\defer.py", line 578, in _runCallbacks
+	    current.result = callback(current.result, *args, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\core\engine.py", line 275, in <lambda>
+	    spider=spider, reason=reason, spider_stats=self.crawler.stats.get_stats()))
+	  File "D:\python27\lib\site-packages\scrapy\signalmanager.py", line 23, in send_catch_log_deferred
+	    return signal.send_catch_log_deferred(*a, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\utils\signal.py", line 53, in send_catch_log_deferred
+	    *arguments, **named)
+	--- <exception caught here> ---
+	  File "D:\python27\lib\site-packages\twisted\internet\defer.py", line 140, in maybeDeferred
+	    result = f(*args, **kw)
+	  File "D:\python27\lib\site-packages\scrapy\xlib\pydispatch\robustapply.py", line 54, in robustApply
+	    return receiver(*arguments, **named)
+	  File "C:\Users\IBM_ADMIN\PycharmProjects\Ejobs\Ejobs\pipelines.py", line 49, in spider_closed
+	    self.producer.close()
+	exceptions.AttributeError: 'MessageQueuePipeline' object has no attribute 'producer'
+	
+2015-03-03 14:08:13+0200 [LinkSpiderDetails] INFO: Dumping Scrapy stats:
+	{'downloader/request_bytes': 330,
+	 'downloader/request_count': 1,
+	 'downloader/request_method_count/GET': 1,
+	 'downloader/response_bytes': 39203,
+	 'downloader/response_count': 1,
+	 'downloader/response_status_count/200': 1,
+	 'finish_reason': 'finished',
+	 'finish_time': datetime.datetime(2015, 3, 3, 12, 8, 13, 113000),
+	 'log_count/DEBUG': 3,
+	 'log_count/ERROR': 2,
+	 'log_count/INFO': 8,
+	 'response_received_count': 1,
+	 'scheduler/dequeued': 1,
+	 'scheduler/dequeued/memory': 1,
+	 'scheduler/enqueued': 1,
+	 'scheduler/enqueued/memory': 1,
+	 'start_time': datetime.datetime(2015, 3, 3, 12, 8, 7, 194000)}
+2015-03-03 14:08:13+0200 [LinkSpiderDetails] INFO: Spider closed (finished)
+2015-03-03 15:00:22+0200 [scrapy] INFO: Scrapy 0.24.5 started (bot: Ejobs)
+2015-03-03 15:00:22+0200 [scrapy] INFO: Optional features available: ssl, http11, django
+2015-03-03 15:00:22+0200 [scrapy] INFO: Overridden settings: {'NEWSPIDER_MODULE': 'Ejobs.spiders', 'SPIDER_MODULES': ['Ejobs.spiders'], 'LOG_FILE': 'Ejob.log', 'BOT_NAME': 'Ejobs'}
+2015-03-03 15:00:22+0200 [scrapy] INFO: Enabled extensions: AutoThrottle, LogStats, TelnetConsole, CloseSpider, WebService, CoreStats, SpiderState
+2015-03-03 15:00:23+0200 [scrapy] INFO: Enabled downloader middlewares: HttpAuthMiddleware, DownloadTimeoutMiddleware, UserAgentMiddleware, RetryMiddleware, DefaultHeadersMiddleware, MetaRefreshMiddleware, HttpCompressionMiddleware, RedirectMiddleware, CookiesMiddleware, ChunkedTransferMiddleware, DownloaderStats
+2015-03-03 15:00:23+0200 [scrapy] INFO: Enabled spider middlewares: HttpErrorMiddleware, OffsiteMiddleware, RefererMiddleware, UrlLengthMiddleware, DepthMiddleware
+2015-03-03 15:00:23+0200 [scrapy] INFO: Enabled item pipelines: MessageQueuePipeline
+2015-03-03 15:00:23+0200 [LinkSpiderDetails] INFO: Spider opened
+2015-03-03 15:00:23+0200 [LinkSpiderDetails] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2015-03-03 15:00:25+0200 [scrapy] DEBUG: Telnet console listening on 127.0.0.1:6023
+2015-03-03 15:00:25+0200 [scrapy] DEBUG: Web service listening on 127.0.0.1:6080
+2015-03-03 15:00:26+0200 [LinkSpiderDetails] INFO: slot: wwww.ejobs.ro | conc: 1 | delay: 2753 ms (-2246) | latency:  506 ms | size: 39392 bytes
+2015-03-03 15:00:26+0200 [LinkSpiderDetails] DEBUG: Crawled (200) <GET http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=> (referer: None)
+2015-03-03 15:00:26+0200 [LinkSpiderDetails] INFO: Closing spider (finished)
+2015-03-03 15:00:26+0200 [LinkSpiderDetails] INFO: Dumping Scrapy stats:
+	{'downloader/request_bytes': 330,
+	 'downloader/request_count': 1,
+	 'downloader/request_method_count/GET': 1,
+	 'downloader/response_bytes': 40202,
+	 'downloader/response_count': 1,
+	 'downloader/response_status_count/200': 1,
+	 'finish_reason': 'finished',
+	 'finish_time': datetime.datetime(2015, 3, 3, 13, 0, 26, 175000),
+	 'log_count/DEBUG': 3,
+	 'log_count/INFO': 8,
+	 'response_received_count': 1,
+	 'scheduler/dequeued': 1,
+	 'scheduler/dequeued/memory': 1,
+	 'scheduler/enqueued': 1,
+	 'scheduler/enqueued/memory': 1,
+	 'start_time': datetime.datetime(2015, 3, 3, 13, 0, 23, 696000)}
+2015-03-03 15:00:26+0200 [LinkSpiderDetails] INFO: Spider closed (finished)
+2015-03-03 15:03:33+0200 [scrapy] INFO: Scrapy 0.24.5 started (bot: Ejobs)
+2015-03-03 15:03:33+0200 [scrapy] INFO: Optional features available: ssl, http11, django
+2015-03-03 15:03:33+0200 [scrapy] INFO: Overridden settings: {'NEWSPIDER_MODULE': 'Ejobs.spiders', 'SPIDER_MODULES': ['Ejobs.spiders'], 'LOG_FILE': 'Ejob.log', 'BOT_NAME': 'Ejobs'}
+2015-03-03 15:03:33+0200 [scrapy] INFO: Enabled extensions: AutoThrottle, LogStats, TelnetConsole, CloseSpider, WebService, CoreStats, SpiderState
+2015-03-03 15:03:34+0200 [scrapy] INFO: Enabled downloader middlewares: HttpAuthMiddleware, DownloadTimeoutMiddleware, UserAgentMiddleware, RetryMiddleware, DefaultHeadersMiddleware, MetaRefreshMiddleware, HttpCompressionMiddleware, RedirectMiddleware, CookiesMiddleware, ChunkedTransferMiddleware, DownloaderStats
+2015-03-03 15:03:34+0200 [scrapy] INFO: Enabled spider middlewares: HttpErrorMiddleware, OffsiteMiddleware, RefererMiddleware, UrlLengthMiddleware, DepthMiddleware
+2015-03-03 15:03:34+0200 [scrapy] INFO: Enabled item pipelines: MessageQueuePipeline
+2015-03-03 15:03:34+0200 [LinkSpiderDetails] INFO: Spider opened
+2015-03-03 15:03:34+0200 [LinkSpiderDetails] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2015-03-03 15:03:36+0200 [scrapy] DEBUG: Telnet console listening on 127.0.0.1:6023
+2015-03-03 15:03:36+0200 [scrapy] DEBUG: Web service listening on 127.0.0.1:6080
+2015-03-03 15:03:37+0200 [LinkSpiderDetails] INFO: slot: wwww.ejobs.ro | conc: 1 | delay: 2804 ms (-2195) | latency:  608 ms | size: 38968 bytes
+2015-03-03 15:03:37+0200 [LinkSpiderDetails] DEBUG: Crawled (200) <GET http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=> (referer: None)
+2015-03-03 15:03:37+0200 [LinkSpiderDetails] INFO: Closing spider (finished)
+2015-03-03 15:03:38+0200 [LinkSpiderDetails] INFO: Dumping Scrapy stats:
+	{'downloader/request_bytes': 330,
+	 'downloader/request_count': 1,
+	 'downloader/request_method_count/GET': 1,
+	 'downloader/response_bytes': 39778,
+	 'downloader/response_count': 1,
+	 'downloader/response_status_count/200': 1,
+	 'finish_reason': 'finished',
+	 'finish_time': datetime.datetime(2015, 3, 3, 13, 3, 37, 568000),
+	 'log_count/DEBUG': 3,
+	 'log_count/INFO': 8,
+	 'response_received_count': 1,
+	 'scheduler/dequeued': 1,
+	 'scheduler/dequeued/memory': 1,
+	 'scheduler/enqueued': 1,
+	 'scheduler/enqueued/memory': 1,
+	 'start_time': datetime.datetime(2015, 3, 3, 13, 3, 34, 16000)}
+2015-03-03 15:03:38+0200 [LinkSpiderDetails] INFO: Spider closed (finished)
+2015-03-03 15:05:59+0200 [scrapy] INFO: Scrapy 0.24.5 started (bot: Ejobs)
+2015-03-03 15:05:59+0200 [scrapy] INFO: Optional features available: ssl, http11, django
+2015-03-03 15:05:59+0200 [scrapy] INFO: Overridden settings: {'NEWSPIDER_MODULE': 'Ejobs.spiders', 'SPIDER_MODULES': ['Ejobs.spiders'], 'LOG_FILE': 'Ejob.log', 'BOT_NAME': 'Ejobs'}
+2015-03-03 15:05:59+0200 [scrapy] INFO: Enabled extensions: AutoThrottle, LogStats, TelnetConsole, CloseSpider, WebService, CoreStats, SpiderState
+2015-03-03 15:05:59+0200 [scrapy] INFO: Enabled downloader middlewares: HttpAuthMiddleware, DownloadTimeoutMiddleware, UserAgentMiddleware, RetryMiddleware, DefaultHeadersMiddleware, MetaRefreshMiddleware, HttpCompressionMiddleware, RedirectMiddleware, CookiesMiddleware, ChunkedTransferMiddleware, DownloaderStats
+2015-03-03 15:05:59+0200 [scrapy] INFO: Enabled spider middlewares: HttpErrorMiddleware, OffsiteMiddleware, RefererMiddleware, UrlLengthMiddleware, DepthMiddleware
+2015-03-03 15:05:59+0200 [scrapy] INFO: Enabled item pipelines: MessageQueuePipeline
+2015-03-03 15:05:59+0200 [LinkSpiderDetails] INFO: Spider opened
+2015-03-03 15:05:59+0200 [LinkSpiderDetails] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2015-03-03 15:06:00+0200 [scrapy] DEBUG: Telnet console listening on 127.0.0.1:6023
+2015-03-03 15:06:00+0200 [scrapy] DEBUG: Web service listening on 127.0.0.1:6080
+2015-03-03 15:06:01+0200 [LinkSpiderDetails] INFO: slot: wwww.ejobs.ro | conc: 1 | delay: 2678 ms (-2321) | latency:  357 ms | size: 38987 bytes
+2015-03-03 15:06:01+0200 [LinkSpiderDetails] DEBUG: Crawled (200) <GET http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=> (referer: None)
+2015-03-03 15:06:01+0200 [LinkSpiderDetails] INFO: Closing spider (finished)
+2015-03-03 15:06:01+0200 [LinkSpiderDetails] INFO: Dumping Scrapy stats:
+	{'downloader/request_bytes': 330,
+	 'downloader/request_count': 1,
+	 'downloader/request_method_count/GET': 1,
+	 'downloader/response_bytes': 39797,
+	 'downloader/response_count': 1,
+	 'downloader/response_status_count/200': 1,
+	 'finish_reason': 'finished',
+	 'finish_time': datetime.datetime(2015, 3, 3, 13, 6, 1, 332000),
+	 'log_count/DEBUG': 3,
+	 'log_count/INFO': 8,
+	 'response_received_count': 1,
+	 'scheduler/dequeued': 1,
+	 'scheduler/dequeued/memory': 1,
+	 'scheduler/enqueued': 1,
+	 'scheduler/enqueued/memory': 1,
+	 'start_time': datetime.datetime(2015, 3, 3, 13, 5, 59, 446000)}
+2015-03-03 15:06:01+0200 [LinkSpiderDetails] INFO: Spider closed (finished)
+2015-03-03 16:04:58+0200 [scrapy] INFO: Scrapy 0.24.5 started (bot: Ejobs)
+2015-03-03 16:04:58+0200 [scrapy] INFO: Optional features available: ssl, http11, django
+2015-03-03 16:04:58+0200 [scrapy] INFO: Overridden settings: {'NEWSPIDER_MODULE': 'Ejobs.spiders', 'SPIDER_MODULES': ['Ejobs.spiders'], 'LOG_FILE': 'Ejob.log', 'BOT_NAME': 'Ejobs'}
+2015-03-03 16:04:59+0200 [scrapy] INFO: Enabled extensions: AutoThrottle, LogStats, TelnetConsole, CloseSpider, WebService, CoreStats, SpiderState
+2015-03-03 16:05:00+0200 [scrapy] INFO: Enabled downloader middlewares: HttpAuthMiddleware, DownloadTimeoutMiddleware, UserAgentMiddleware, RetryMiddleware, DefaultHeadersMiddleware, MetaRefreshMiddleware, HttpCompressionMiddleware, RedirectMiddleware, CookiesMiddleware, ChunkedTransferMiddleware, DownloaderStats
+2015-03-03 16:05:00+0200 [scrapy] INFO: Enabled spider middlewares: HttpErrorMiddleware, OffsiteMiddleware, RefererMiddleware, UrlLengthMiddleware, DepthMiddleware
+2015-03-03 16:05:00+0200 [scrapy] INFO: Enabled item pipelines: MessageQueuePipeline
+2015-03-03 16:05:00+0200 [LinkSpiderFull] INFO: Spider opened
+2015-03-03 16:05:00+0200 [LinkSpiderFull] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2015-03-03 16:05:02+0200 [scrapy] DEBUG: Telnet console listening on 127.0.0.1:6023
+2015-03-03 16:05:02+0200 [scrapy] DEBUG: Web service listening on 127.0.0.1:6080
+2015-03-03 16:05:03+0200 [LinkSpiderFull] INFO: slot: wwww.ejobs.ro | conc: 1 | delay: 2823 ms (-2176) | latency:  647 ms | size: 38533 bytes
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Crawled (200) <GET http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=> (referer: None)
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/hr-specialist-with-polish/658197/sqi',
+	 'JobTitle': [u'HR Specialist with Polish '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/branded//654609',
+	 'JobTitle': [u'Inhouse Sales Coordinator '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/branded//654604',
+	 'JobTitle': [u'Field Service Engineer '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/branded//654600',
+	 'JobTitle': [u'Sales Manager '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/junior-developer/658100/sqi',
+	 'JobTitle': [u'junior developer '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/it-support-specialist-english/658213/sqi',
+	 'JobTitle': [u'IT Support Specialist ( ENGLISH) '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/personalizat/automation-tester/658212',
+	 'JobTitle': [u'Automation Tester '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/ve-opens-a-new-development-center-in-cluj/658188/sqi',
+	 'JobTitle': [u'Ve Opens a New Development Center in Cluj '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/reprezentant-vanzari-zona-resita-caransebes/658172/sqi',
+	 'JobTitle': [u'REPREZENTANT VANZARI ZONA RESITA - CARANSEBES '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/personal-pentru-activitati-de-reparatii-si-intretinere-aparatura-in-teritoriu-bucuresti/658163/sqi',
+	 'JobTitle': [u'Personal pentru activitati de reparatii si intretinere aparatura in teritoriu- Bucuresti '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/reprezentant-tehnic/658161/sqi',
+	 'JobTitle': [u'REPREZENTANT TEHNIC '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/asistent-tehnic/658160/sqi',
+	 'JobTitle': [u'Asistent tehnic '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/personal-pentru-activitati-de-reparatii-si-intretinere-aparatura-in-teritoriu/658158/sqi',
+	 'JobTitle': [u'Personal pentru activitati de reparatii si intretinere aparatura in teritoriu '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/desenator-tehnic/658149/sqi',
+	 'JobTitle': [u'Desenator tehnic '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/manager-crc-competent-resource-centre/658147/sqi',
+	 'JobTitle': [u'Manager CRC (Competent Resource Centre) '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/personalizat/consultanti-personali-de-stil/658142',
+	 'JobTitle': [u'Consultan\u0163i personali de stil de via\u0163\u0103 '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/data-management-analyst-german-language/658136/sqi',
+	 'JobTitle': [u'Data Management Analyst - German language '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/operatoare-logistica/658113/sqi',
+	 'JobTitle': [u'Operatoare Logistica '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/game-community-manager/658108/sqi',
+	 'JobTitle': [u'Game Community Manager '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/it-specialist-ist-for-security-systems/658103/sqi',
+	 'JobTitle': [u'IT Specialist (IST) for SECURITY SYSTEMS '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/software-engineers-assembly/658101/sqi',
+	 'JobTitle': [u'SOFTWARE ENGINEERS (ASSEMBLY) '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:03+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/sales-assistant-shop-reprezentant-comercial-orange-si-reprezentant-vanzari-teren-d2d/658089/sqi',
+	 'JobTitle': [u'Sales Assistant Shop / Reprezentant Comercial Orange si Reprezentant vanzari teren D2D '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:04+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/programator-php-web-developr-dezvoltator-php-full-time-job-in-pitesti/655392/sqi',
+	 'JobTitle': [u'Programator PHP / Web Developr / Dezvoltator PHP full time job in Pitesti '],
+	 'ScrapeDate': '2015-03-03 14:05:03',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:04+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/dispecer-transport/658086/sqi',
+	 'JobTitle': [u'Dispecer transport '],
+	 'ScrapeDate': '2015-03-03 14:05:04',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:04+0200 [LinkSpiderFull] DEBUG: Scraped from <200 http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=>
+	{'JobAddLink': u'http://www.ejobs.ro/user/locuri-de-munca/service-delivery-team-lead-manager-with-english-or-french/658085/sqi',
+	 'JobTitle': [u'Service Delivery Team Lead/Manager with English or French '],
+	 'ScrapeDate': '2015-03-03 14:05:04',
+	 'SourcePage': 'http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results='}
+2015-03-03 16:05:04+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  357 ms | size:     0 bytes
+2015-03-03 16:05:04+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/hr-specialist-with-polish/658197> from <GET http://www.ejobs.ro/user/locuri-de-munca/hr-specialist-with-polish/658197/sqi>
+2015-03-03 16:05:10+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  144 ms | size:     0 bytes
+2015-03-03 16:05:10+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/field-service-engineer/654604> from <GET http://www.ejobs.ro/branded//654604>
+2015-03-03 16:05:15+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  125 ms | size:     0 bytes
+2015-03-03 16:05:15+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/inhouse-sales-coordinator/654609> from <GET http://www.ejobs.ro/branded//654609>
+2015-03-03 16:05:20+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  154 ms | size:     0 bytes
+2015-03-03 16:05:20+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/sales-manager/654600> from <GET http://www.ejobs.ro/branded//654600>
+2015-03-03 16:05:27+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  133 ms | size:     0 bytes
+2015-03-03 16:05:27+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/ve-opens-a-new-development-center-in-cluj/658188> from <GET http://www.ejobs.ro/user/locuri-de-munca/ve-opens-a-new-development-center-in-cluj/658188/sqi>
+2015-03-03 16:05:34+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  161 ms | size:     0 bytes
+2015-03-03 16:05:34+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/automation-tester/658212> from <GET http://www.ejobs.ro/personalizat/automation-tester/658212>
+2015-03-03 16:05:41+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  118 ms | size:     0 bytes
+2015-03-03 16:05:41+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/it-support-specialist--english/658213> from <GET http://www.ejobs.ro/user/locuri-de-munca/it-support-specialist-english/658213/sqi>
+2015-03-03 16:05:48+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  182 ms | size:     0 bytes
+2015-03-03 16:05:48+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/junior-developer/658100> from <GET http://www.ejobs.ro/user/locuri-de-munca/junior-developer/658100/sqi>
+2015-03-03 16:05:55+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  139 ms | size:     0 bytes
+2015-03-03 16:05:55+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/reprezentant-tehnic/658161> from <GET http://www.ejobs.ro/user/locuri-de-munca/reprezentant-tehnic/658161/sqi>
+2015-03-03 16:06:00+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  171 ms | size:     0 bytes
+2015-03-03 16:06:00+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/personal-pentru-activitati-de-reparatii-si-intretinere-aparatura-in-teritoriu-bucuresti/658163> from <GET http://www.ejobs.ro/user/locuri-de-munca/personal-pentru-activitati-de-reparatii-si-intretinere-aparatura-in-teritoriu-bucuresti/658163/sqi>
+2015-03-03 16:06:00+0200 [LinkSpiderFull] INFO: Crawled 1 pages (at 1 pages/min), scraped 25 items (at 25 items/min)
+2015-03-03 16:06:03+0200 [scrapy] INFO: Received SIGINT, shutting down gracefully. Send again to force 
+2015-03-03 16:06:03+0200 [LinkSpiderFull] INFO: Closing spider (shutdown)
+2015-03-03 16:06:05+0200 [LinkSpiderFull] INFO: slot: www.ejobs.ro | conc: 1 | delay: 5000 ms (+0) | latency:  259 ms | size:     0 bytes
+2015-03-03 16:06:05+0200 [LinkSpiderFull] DEBUG: Redirecting (301) to <GET http://www.ejobs.ro/user/locuri-de-munca/reprezentant-vanzari-zona-resita--caransebes/658172> from <GET http://www.ejobs.ro/user/locuri-de-munca/reprezentant-vanzari-zona-resita-caransebes/658172/sqi>
+2015-03-03 16:06:05+0200 [scrapy] INFO: Received SIGINT twice, forcing unclean shutdown

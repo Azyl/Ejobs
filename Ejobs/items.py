@@ -15,6 +15,19 @@ class EjobsJobAdscrapperItem(scrapy.Item):
     ScrapeDate = scrapy.Field()
     JobTitle = scrapy.Field()
     JobAddLink = scrapy.Field()
+    CompanyName = scrapy.Field()
+    TipJob = scrapy.Field()
+    Orase = scrapy.Field()
+    NivelCariera = scrapy.Field()
+    LimbiStraine = scrapy.Field()
+    Oferta = scrapy.Field()
+    Departament = scrapy.Field()
+    JobAdStartDate = scrapy.Field()
+    JobAdExpireDate = scrapy.Field()
+    NrJoburi = scrapy.Field()
+    JobAdApplicantsNr = scrapy.Field()
+    JobAdDescription = scrapy.Field()
+    JobAdSelectionCriteria = scrapy.Field()
 
 
 class EjobsScrappedJobAdItems(scrapy.Item):

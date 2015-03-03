@@ -10,7 +10,7 @@ class LinkSpider(scrapy.Spider,):
     start_urls = ["http://wwww.ejobs.ro/user/searchjobs?q=&oras[]=&departament[]=&industrie[]=&searchType=simple&time_span=&page_no=&page_results="]
 
     def __init__(self):
-        self.i = 1
+        self.i = 8
 
     def parse(self, response):
         """
