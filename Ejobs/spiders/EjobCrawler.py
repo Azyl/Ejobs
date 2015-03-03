@@ -1,7 +1,7 @@
 from time import strftime, gmtime
 from Ejobs.items import EjobsJobAdscrapperItem
 
-__author__ = 'AndreiTataru'
+__author__ = 'Azyl'
 import scrapy
 
 
@@ -13,7 +13,8 @@ class LinkSpiderFull(scrapy.Spider,):
     start_urls = ["http://wwww.ejobs.ro/user/searchjobs?q=&oras[]=&departament[]=&industrie[]=&searchType=simple&time_span=&page_no=&page_results="]
 
     def __init__(self):
-        self.i = 10
+        self.i = 1
+        self.maxDepth = 100
 
 
 
@@ -35,28 +36,23 @@ class LinkSpiderFull(scrapy.Spider,):
             request = scrapy.Request(str(JobAd.xpath("./div/a[2]/@href").extract()[0]), callback=self.parseDetails, encoding='utf-8')
             request.meta['item'] = item
             yield request
-            #yield item
 
         nextPage = JobAdsResponse.xpath(".//*[@id='content']/div[1]/div[3]/div[1]/div/ul/li[@class='next']/a/@href").extract()
-        # print ' ----- >>>>> ' + str(nextPage)
-
 
         if nextPage is not None:
-            if self.i <= 10:
+            if self.i <= self.maxDepth:
                 self.i = self.i +1
 
                 yield scrapy.Request(str(nextPage[0]), callback=self.parse, encoding='utf-8')
 
     def parseDetails(self, response):
-        print "asdasdasdas adsadsa das dsa d->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-
 
         item = response.meta['item']
 
-        if response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()"):
+        if response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()") or not (response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/img/@src") or response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/a/img/@src")):
             item['JobAdType'] = 1
 
-            item['CompanyName'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()").extract()[0]
+            item['CompanyName'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()").extract()
             item['TipJob'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[2]/ul/li/text()").extract()
             item['Orase'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[3]/ul/li/a/text()").extract()
             item['NivelCariera'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[4]/ul/li/text()").extract()
@@ -72,10 +68,11 @@ class LinkSpiderFull(scrapy.Spider,):
         else:
             item['JobAdType'] = 2
 
-            item['JobAdDescriptionImage'] = response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/img/@src").extract()[0]
+            try:
+                item['JobAdDescriptionImage'] = response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/img/@src").extract()[0]
+            except IndexError:
+                item['JobAdDescriptionImage'] = response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/a/img/@src").extract()[0]
 
-
-
-        print str(item)
+        yield item
 
 
