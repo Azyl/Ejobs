@@ -42,7 +42,10 @@ class LinkSpiderFull(scrapy.Spider,):
             if (self.i <= self.maxDepth) or self.runFree:
                 self.i = self.i +1
 
-                yield scrapy.Request(str(nextPage[0]), callback=self.parse, encoding='utf-8')
+                if nextPage:
+                    yield scrapy.Request(str(nextPage[0]), callback=self.parse, encoding='utf-8')
+                else:
+                    print 'no more links to crawl :)'
 
     def parseDetails(self, response):
 
