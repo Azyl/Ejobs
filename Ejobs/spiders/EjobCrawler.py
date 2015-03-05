@@ -15,8 +15,7 @@ class LinkSpiderFull(scrapy.Spider,):
     def __init__(self):
         self.i = 1
         self.maxDepth = 1
-
-
+        self.runFree = True
 
     def parse(self, response):
         """
@@ -40,7 +39,7 @@ class LinkSpiderFull(scrapy.Spider,):
         nextPage = JobAdsResponse.xpath(".//*[@id='content']/div[1]/div[3]/div[1]/div/ul/li[@class='next']/a/@href").extract()
 
         if nextPage is not None:
-            if self.i <= self.maxDepth:
+            if (self.i <= self.maxDepth) or self.runFree:
                 self.i = self.i +1
 
                 yield scrapy.Request(str(nextPage[0]), callback=self.parse, encoding='utf-8')
