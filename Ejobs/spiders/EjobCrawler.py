@@ -67,12 +67,24 @@ class LinkSpiderFull(scrapy.Spider,):
             item['JobAdType'] = 1
 
             item['CompanyName'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()").extract()
-            item['TipJob'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[2]/ul/li/text()").extract()
-            item['Orase'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[3]/ul/li/a/text()").extract()
-            item['NivelCariera'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[4]/ul/li/text()").extract()
-            item['LimbiStraine'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[5]/ul/li/text()").extract()
-            item['Oferta'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[6]/span/text()").extract()
-            item['Departament'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[1]/ul/li/a/text()").extract()
+
+            if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='employmentType']"):
+                item['TipJob'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='employmentType']/li/text()").extract()
+            if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='addressLocality']"):
+                item['Orase'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='addressLocality']/li/a/text()").extract()
+
+            if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='educationRequirements']"):
+                item['NivelCariera'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='educationRequirements']/li/text()").extract()
+
+            if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@data-plural='foreign languages']"):
+                item['LimbiStraine'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@data-plural='foreign languages']/li/text()").extract()
+
+            if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/*[@itemprop='baseSalary']"):
+                item['Oferta'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/*[@itemprop='baseSalary']/text()").extract()
+
+            if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='department']"):
+                item['Departament'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='department']/li/a/text()").extract()
+
             item['JobAdStartDate'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[1]/span/strong/text()").extract()[0]
             item['JobAdExpireDate'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[1]/strong/text()").extract()[0]
             item['NrJoburi'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[2]/div/div[1]/div[2]/text()").extract()[0]
@@ -81,9 +93,10 @@ class LinkSpiderFull(scrapy.Spider,):
             if not item['JobAdDescription']:
                 item['JobAdDescription'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[3]").extract()
             item['JobAdSelectionCriteria'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[3]/ul/li/text()").extract()
-            item['JobAdDriverLicence'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[7]/text()").extract()
-            if item['JobAdDriverLicence']:
-                item['JobAdDriverLicence'] = item['JobAdDriverLicence'][1]
+
+            if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/*[contains(text(),'Driving')]"):
+                item['JobAdDriverLicence'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/*[contains(text(),'Driving')]/parent::*/text()").extract()
+
         else:
             item['JobAdType'] = 2
             try:
