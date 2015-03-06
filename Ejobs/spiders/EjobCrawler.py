@@ -81,7 +81,9 @@ class LinkSpiderFull(scrapy.Spider,):
             if not item['JobAdDescription']:
                 item['JobAdDescription'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[3]").extract()
             item['JobAdSelectionCriteria'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[3]/ul/li/text()").extract()
-            item['JobAdDriverLicence'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[7]/text()").extract()[1]
+            item['JobAdDriverLicence'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[7]/text()").extract()
+            if item['JobAdDriverLicence']:
+                item['JobAdDriverLicence'] = item['JobAdDriverLicence'][1]
         else:
             item['JobAdType'] = 2
             try:
