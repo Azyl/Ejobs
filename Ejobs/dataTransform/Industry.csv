@@ -1,32 +1,32 @@
-Industry;IndustryId
-All industries;0
-Administrative / Public Sector;1
-Advertising / Marketing / PR;25
-Agriculture;2
-Arts / Entertainment;3
-Auto / Automotive;14
-Call-Center / BPO;6
-Chemistry;7
-Commerce / Retail;8
-Construction;9
-Education / Training;10
-Energy;30
-Environmental Protection;24
-Financial / Banking;5
-Food and Drinks;13
-Insurance;4
-IT / Telecom;18
-Law;29
-Media / Internet;19
-Medicine / Health;20
-Naval / Aeronautical;16
-Oil / Gas;22
-Pharma;11
-Real estate;12
-Security;21
-Services;23
-Sport / Beauty / Spa;26
-Textile;17
-Tourism;28
-Transport / Logistics / Import - Export;27
-Wood / PVC;15
+Industry;IndustryId;IndustryAlt
+All industries;0;Toate industriile
+Administrative / Public Sector;1;Administratie / Sector Public
+Agriculture;2;Agrara
+Arts / Entertainment;3;Arta / Entertainment
+Insurance;4;Asigurari
+Financial / Banking;5;Banci / Servicii financiare
+Call-Center / BPO;6;Call-center / BPO
+Chemistry;7;Chimica
+Commerce / Retail;8;Comert / Retail
+Construction;9;Constructi
+Education / Training;10;Educatie / Training
+Pharma;11;Farma
+Real estate;12;Imobiliara
+Food and Drinks;13;Alimentara
+Auto / Automotive;14;Masini / Auto
+Wood / PVC;15;Lemn / PVC
+Naval / Aeronautical;16;Navala / Aeronautica
+Textile;17;Textila
+IT / Telecom;18;IT / Telecom
+Media / Internet;19;Media / Internet
+Medicine / Health;20;Medicina / Sanatate
+Security;21;Paza si protectie
+Oil / Gas;22;Petrol / Gaze
+Services;23;Prestari servicii
+Environmental Protection;24;Protectia mediului
+Advertising / Marketing / PR;25;Publicitate / Marketing / PR
+Sport / Beauty / Spa;26;Sport / Frumusete
+Transport / Logistics / Import - Export;27;Transport / Logistica / Import - Export
+Tourism;28;Turism / HoReCa
+Law;29;Drept
+Energy;30;Energetica

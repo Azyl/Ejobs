@@ -1,65 +1,65 @@
-Department;DepartmentId
-All departments;0
-Administrative / Logistics;24
-Advertising ;20
-Agriculture;25
-Alimentation;66
-Alternative Medicine ;63
-Architecture / Interior design ;18
-Au pair / Babysitter / Cleaning;52
-Audit / Consulting;71
-Automotive / Equipment ;67
-Banks ;60
-Beauty Salons ;64
-Chemistry / Biotech;49
-Civil engineering / Industrial design ;68
-Client Service / Call Center;44
-Construction / Facilities ;17
-Crewing / Casino / Entertainment;61
-Education / Training / Arta;23
-Engineering ;45
-Environmental Protection;48
-Finance / Accounting;59
-Graphics / Web design / DTP;22
-Human medicine;15
-Human resources ;8
-Insurance;3
-International trading;47
-Internet / e-Commerce;31
-IT Hardware ;58
-IT Software ;57
-Journalism / Editorial;104
-Labor Protection;50
-Legal;7
-Management;101
-Manufacturing ;36
-Marketing;12
-Merchandising ;53
-MLM / Direct Sales;70
-Naval / Aeronautical;72
-NGO / Volunteering;28
-Office / Back-office / Secretarial;10
-Oil / Gas;56
-Other ;14
-Pharmaceutical;16
-Printing / Publishing;42
-Procurement;41
-Public office;29
-Public relations ;9
-Qualified personnel;103
-Quality Control ;54
-Real Estate ;4
-Research & development ;39
-Sales;5
-Security / Military;26
-Service / Maintenance;69
-Specialists / Technicians;105
-Sport / Wellness;62
-Statistics / Mathematics;46
-Telecommunications ;38
-Textile / Fashion design;65
-Tourism / Hotel staff;30
-Translations ;55
-Transportation / Distribution;40
-Veterinary medicine;102
-Wood Industry;51
+Department;DepartmentId;DepartmentAlt
+All departments;0;Toate departamentele
+Insurance;3;Asigurari
+Real Estate ;4;Imobiliare
+Sales;5;Vanzari
+Legal;7;Juridic
+Human resources ;8;Resurse umane / Psihologie
+Public relations ;9;Relatii publice
+Office / Back-office / Secretarial;10;Office / Back-office / Secretariat
+Marketing;12;Marketing
+Other ;14;Altele
+Human medicine;15;Medicina umana
+Pharmaceutical;16;Farmacie
+Construction / Facilities ;17;Constructii / Instalatii
+Architecture / Interior design ;18;Arhitectura / Design interior
+Advertising ;20;Publicitate
+Graphics / Web design / DTP;22;Grafica / Webdesign / DTP
+Education / Training / Arta;23;Educatie / Training / Arte
+Administrative / Logistics;24;Administrativ / Logistica
+Agriculture;25;Agricultura
+Security / Military;26;Paza si protectie / Militar
+NGO / Volunteering;28;ONG / Voluntariat
+Public office;29;Functii publice
+Tourism / Hotel staff;30;Turism / Hotel staff
+Internet / e-Commerce;31;Internet / e-Commerce
+Manufacturing ;36;Productie
+Telecommunications ;38;Telecomunicatii
+Research & development ;39;Cercetare - dezvoltare
+Transportation / Distribution;40;Transport / Distributie
+Procurement;41;Achizitii
+Printing / Publishing;42;Tipografii / Edituri
+Client Service / Call Center;44;Relatii clienti / Call center
+Engineering ;45;Inginerie
+Statistics / Mathematics;46;Statistica / Matematica
+International trading;47;Import - export
+Environmental Protection;48;Protectia mediului
+Chemistry / Biotech;49;Chimie / Biochimie
+Labor Protection;50;Protectia muncii
+Wood Industry;51;Prelucrarea lemnului / PVC
+Au pair / Babysitter / Cleaning;52;Au pair / Babysitter / Curatenie
+Merchandising ;53;Merchandising / Promoteri
+Quality Control ;54;Controlul calitatii
+Translations ;55;Traduceri
+Oil / Gas;56;Petrol / Gaze
+IT Software ;57;IT Software
+IT Hardware ;58;IT Hardware
+Finance / Accounting;59;Financiar / Contabilitate
+Banks ;60;Banci
+Crewing / Casino / Entertainment;61;Crewing / Casino / Entertainment
+Sport / Wellness;62;Sport / Wellness
+Alternative Medicine ;63;Medicina alternativa
+Beauty Salons ;64;Saloane / Clinici frumusete
+Textile / Fashion design;65;Confectii / Design vestimentar
+Alimentation;66;Alimentatie / HoReCa
+Automotive / Equipment ;67;Auto / Echipamente
+Civil engineering / Industrial design ;68;Proiectare civila / industriala
+Service / Maintenance;69;Service / Reparatii
+MLM / Direct Sales;70;MLM / Vanzari directe
+Audit / Consulting;71;Audit / Consultanta
+Naval / Aeronautical;72;Naval / Aeronautic
+Management;101;Management
+Veterinary medicine;102;Medicina veterinara
+Qualified personnel;103;Personal calificat
+Journalism / Editorial;104;Jurnalism / Editorial
+Specialists / Technicians;105;Specialisti / Tehnicieni

@@ -149,7 +149,7 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            a = "insert into T_industry (industryId,industryName,industryNameAlt) values (%i,q'!%s!',q'!%s!');" % (int(row['IndustryId']),row['Industry'],'')
+            a = "insert into T_industry (industryId,industryName,industryNameAlt) values (%i,q'!%s!',q'!%s!');" % (int(row['IndustryId']),row['Industry'],row['IndustryAlt'])
             f.write(a+'\n')
 
     def departmentsMasterData(self):
@@ -168,7 +168,7 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            a = "insert into T_departments(departmentId,departmentName) values (%i,q'!%s!');" % (int(row['DepartmentId']),row['Department'])
+            a = "insert into T_departments(departmentId,departmentName,departmentNameAlt) values (%i,q'!%s!',q'!%s!');" % (int(row['DepartmentId']),row['Department'],row['DepartmentAlt'])
             f.write(a+'\n')
 
     def careerLevelMasterData(self):
@@ -186,7 +186,7 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            a = "insert into T_careerLevel(careerLevelId,careerLevelName) values (%i,q'!%s!');" % (int(row['CarrerLevelId']),row['CarrerLevel'])
+            a = "insert into T_careerLevel(careerLevelId,careerLevelName,careerLevelNameAlt) values (%i,q'!%s!',q'!%s!');" % (int(row['CarrerLevelId']),row['CarrerLevel'],row['CarrerLevelAlt'])
             f.write(a+'\n')
 
     def driverLicenceMasterData(self):
@@ -204,7 +204,7 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            a = "insert into T_driverLicence(driverLicenceId,driverLicenceDescription) values (q'!%s!',q'!%s!');" % (row['DriverLicenceId'],row['DriverLicenceDescription'])
+            a = "insert into T_driverLicence(driverLicenceId,driverLicenceDescription,driverLicenceDescriptionAlt) values (q'!%s!',q'!%s!',q'!%s!');" % (row['DriverLicenceId'],row['DriverLicenceDescription'],'')
             f.write(a+'\n')
 
     def jobTypeMasterData(self):

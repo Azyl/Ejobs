@@ -1,7 +1,7 @@
-CarrerLevel;CarrerLevelId
-Any career level;0
-Unskilled;9
-Student;2
-Entry-Level;3
-Mid-Level;4
-Management;5
+CarrerLevel;CarrerLevelId;CarrerLevelAlt
+Any career level;0;Orice nivel de cariera
+Student;2;Student
+Entry-Level;3;Entry-Level/Primii 3 Ani Exp
+Mid-Level;4;Mid-Level/Peste 3 Ani Exp
+Management;5;Manager/Executive Position
+Unskilled;9;Farastudiisup/Necalificat
