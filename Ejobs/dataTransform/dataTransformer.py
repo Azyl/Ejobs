@@ -1,8 +1,10 @@
 import kombu
 import kombu.entity
-import cx_Oracle
+# import cx_Oracle
 from scrapy.utils.serialize import ScrapyJSONEncoder
 from scrapy.conf import settings
+
+import csv
 
 __author__ = 'AndreiTataru'
 
@@ -58,11 +60,64 @@ class RabbitmqConsumer():
 class MasterDataSetup():
 
     def __init__(self):
-        self.con = cx_Oracle.connect('c##azyl/azyl@azyl13.no-ip.org:1522/pdbazyl13')
-        self.test_con(self.con)
+        #self.con = cx_Oracle.connect('c##azyl/azyl@azyl13.no-ip.org:1522/pdbazyl13')
+        #self.test_con(self.con)
+        pass
+
+
+    def countryMasterData(self):
+         file_name = 'coduri countries.csv'
+         delimiter = ';'
+         quote_character = '"'
+         csv_fp = open(file_name, 'rb')
+         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
+         current_row = 0
+         for row in csv_reader:
+             current_row += 1
+             # Use heading rows as field names for all other rows.
+             if current_row == 1:
+                 csv_reader.fieldnames = row['undefined-fieldnames']
+                 continue
+
+             print 'insert into T-country (countryId, countryName, isoCountryCodeA2, isoCountryCodeA2) values (%s,%s,%s,%s)' % (row['Number'],row['Country'],row['A 2'], row['A 3'])
+
+
+    def countyMasterData(self):
+        file_name = 'coduri counties.csv'
+        delimiter = ';'
+        quote_character = '"'
+        csv_fp = open(file_name, 'rb')
+        csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
+        current_row = 0
+        for row in csv_reader:
+            current_row += 1
+            # Use heading rows as field names for all other rows.
+            if current_row == 1:
+                csv_reader.fieldnames = row['undefined-fieldnames']
+                continue
+
+            print 'insert into T-county (countyId, countyName, countryId, countyCapital) values (%s,%s,%i,%s)' % (row['ISO'],row['County'],642, row['Capital'])
 
     def cityMasterData(self):
-        pass
+        file_name = 'coduri siruta Romania.csv'
+        delimiter = ';'
+        quote_character = '"'
+        csv_fp = open(file_name, 'rb')
+        csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
+        current_row = 0
+        for row in csv_reader:
+            current_row += 1
+            # Use heading rows as field names for all other rows.
+            if current_row == 1:
+                csv_reader.fieldnames = row['undefined-fieldnames']
+                continue
+            if row['Mediu']=='Urban':
+                mediu='U'
+            else:
+                mediu='R'
+
+            print 'insert into T-city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (%s,%s,%s,%s,%s,%s,%i)' % (row['Cod SIRUTA'],mediu,row['Numele localitatii'],'',row['Numele localitatii superioare'],row['Cod judet'],642)
+
 
     def test_con(self,con):
         cur = con.cursor()
@@ -71,9 +126,9 @@ class MasterDataSetup():
             print(row)
         print 'works'
 
-    def __exit__(self):
-        self.cur.close()
-        self.con.close()
+    # def __exit__(self):
+    #     self.cur.close()
+    #     self.con.close()
 
 if __name__ == "__main__":
     # rabbit = RabbitmqConsumer()
@@ -88,4 +143,7 @@ if __name__ == "__main__":
     #    rabbit.q_connection.drain_events(timeout=1)
 
     ora = MasterDataSetup()
+    #
+    ora.countryMasterData()
+    ora.countyMasterData()
     ora.cityMasterData()
