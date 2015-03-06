@@ -1,9 +1,11 @@
 import kombu
 import kombu.entity
+import cx_Oracle
 from scrapy.utils.serialize import ScrapyJSONEncoder
 from scrapy.conf import settings
 
 __author__ = 'AndreiTataru'
+
 
 
 
@@ -53,18 +55,34 @@ class RabbitmqConsumer():
         else:
             raise Exception("item['JobAdType'] is null")
 
+class MasterDataSetup():
 
+    def __init__(self):
+        self.con = cx_Oracle.connect('c##azyl/azyl@azyl13.no-ip.org:1522/pdbazyl13')
+        self.test_con(self.con)
 
+    def cityMasterData(self):
+        pass
 
+    def test_con(self,con):
+        cur = con.cursor()
+        cur.execute('select * from dual')
+
+    def __exit__(self):
+        self.cur.close()
+        self.con.close()
 
 if __name__ == "__main__":
-    rabbit = RabbitmqConsumer()
-    rabbit.connect(routing_key='')
-    rabbit.consumer.consume(no_ack=False)
-
-    print 'Waiting for messages'
-    while(True):
-        rabbit.q_connection.drain_events()
+    # rabbit = RabbitmqConsumer()
+    # rabbit.connect(routing_key='')
+    # rabbit.consumer.consume(no_ack=False)
+    #
+    # print 'Waiting for messages'
+    # while(True):
+    #     rabbit.q_connection.drain_events()
 
     # with rabbit.consumer:
     #    rabbit.q_connection.drain_events(timeout=1)
+
+    ora = MasterDataSetup()
+    ora.cityMasterData()
