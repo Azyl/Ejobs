@@ -1,0 +1,16 @@
+DriverLicenceId;DriverLicenceDescription
+A;Vehicle with two wheels (motorcycle) with or without a sidecar that has an engine larger than 50CC or can achieve a speed greater than 50 km/h or a three wheel vehicle (tricycle) that has an engine larger than 50CC or can achieve a speed greater than 50 km/h, the maximum authorized mass must not exceed 400 kg.
+A1;Vehicle with two or three wheels having a maximum engine capacity of 50CC, a minimum construction speed of 25 km/h and a maximum speed of 50 km/h.
+B;Vehicle that does not exceed a 3,500 kg authorized mass, has a maximum of 8 seats besides the driver's and is allowed to pull a light-weight trailer not exceeding an authorized mass of 750 kg.
+B1;Vehicle with three or four wheels having a minimum mass of 400 kg and a maximum mass of 550 kg that has an engine larger than 50CC and can achieve a speed greater than 50 km/h.
+B+E;A B category vehicle that has a trailer with an authorized mass greater than 750 kg but not exceeding the mass of the pulling vehicle.
+C1;Vehicle that has a mass greater than 3,500 kg but not exceeding 7,500 kg.
+C1+E;A C1 category vehicle that has a trailer exceeding 750 kg but the summed mass of the vehicle and trailer doesn't exceed 12,000 kg.
+C+E;A C category vehicle that is allowed to pull a trailer with an authorized mass greater than 750 kg but not exceeding the mass of the pulling vehicle.
+D;Vehicle that has more than 8 seats besides the driver's.
+D1;Vehicle that has more than 8 seats besides the driver's but not more than 16 seats.
+D1+E;A D1 category vehicle with a trailer exceeding 750 kg but the summed mass of the vehicle and trailer not exceeding 12,000 kg.
+D+E;A D category vehicle with a trailer exceeding a 750 kg mass but the trailer must not be used for people transport.
+Tr;Tractors and self-propelled working vehicles.
+Tb;Trolleybuses
+TV;Trams

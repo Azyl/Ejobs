@@ -167,6 +167,39 @@ class MasterDataSetup():
 
             print 'insert into T_careerLevel(careerLevelId,careerLevelName) values (%i,%s);' % (int(row['CarrerLevelId']),row['CarrerLevel'])
 
+
+    def driverLicenceMasterData(self):
+        file_name = 'Driver licences.csv'
+        delimiter = ';'
+        quote_character = '"'
+        csv_fp = open(file_name, 'rb')
+        csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
+        current_row = 0
+        for row in csv_reader:
+            current_row += 1
+            # Use heading rows as field names for all other rows.
+            if current_row == 1:
+                csv_reader.fieldnames = row['undefined-fieldnames']
+                continue
+
+            print 'insert into T_driverLicence(driverLicenceId,driverLicenceDescription) values (%s,%s);' % (row['DriverLicenceId'],row['DriverLicenceDescription'])
+
+    def jobTypeMasterData(self):
+        file_name = 'Job Types.csv'
+        delimiter = ';'
+        quote_character = '"'
+        csv_fp = open(file_name, 'rb')
+        csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
+        current_row = 0
+        for row in csv_reader:
+            current_row += 1
+            # Use heading rows as field names for all other rows.
+            if current_row == 1:
+                csv_reader.fieldnames = row['undefined-fieldnames']
+                continue
+
+            print 'insert into T_jobType(jobAdTypeId,jobAdTypeName) values (%s,%s);' % (int(row['JobAdTypeId']),row['JobAdTypeName'])
+
     def test_con(self,con):
         cur = con.cursor()
         cur.execute('select * from dual')
@@ -198,3 +231,5 @@ if __name__ == "__main__":
     ora.industryMasterData()
     ora.departmentsMasterData()
     ora.careerLevelMasterData()
+    ora.driverLicenceMasterData()
+    ora.jobTypeMasterData()
