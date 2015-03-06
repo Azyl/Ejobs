@@ -68,11 +68,10 @@ class LinkSpiderFull(scrapy.Spider,):
             item['JobAdDescription'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[4]/div[1]/p").extract()
             if not item['JobAdDescription']:
                 item['JobAdDescription'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[3]").extract()
-
             item['JobAdSelectionCriteria'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[3]/ul/li/text()").extract()
+            item['JobAdDriverLicence'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[2]/div[7]/text()").extract()[1]
         else:
             item['JobAdType'] = 2
-
             try:
                 item['JobAdDescriptionImage'] = response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/img/@src").extract()[0]
             except IndexError:
