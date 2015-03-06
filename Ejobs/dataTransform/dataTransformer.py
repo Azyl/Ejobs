@@ -67,6 +67,9 @@ class MasterDataSetup():
     def test_con(self,con):
         cur = con.cursor()
         cur.execute('select * from dual')
+        for row in cur:
+            print(row)
+        print 'works'
 
     def __exit__(self):
         self.cur.close()
