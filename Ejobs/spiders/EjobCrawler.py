@@ -41,10 +41,10 @@ class LinkSpiderFull(scrapy.Spider,):
             item['JobTitle'] = JobAd.xpath("./div[2]/div[1]/a[2]/text()").extract()
             item['SourcePage'] = response.url
             item['ScrapeDate'] = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-            item['JobAddLink'] = JobAd.xpath("./div[2]/div[1]/a[2]/@href").extract()[0]
+            item['JobAddLink'] = JobAd.xpath("./div/div/a[2]/@href").extract()[0]
             # remove gmt for normal hour
 
-            request = scrapy.Request(str(JobAd.xpath("./div/a[2]/@href").extract()[0]), callback=self.parseDetails, encoding='utf-8')
+            request = scrapy.Request(str(JobAd.xpath("./div/div/a[2]/@href").extract()[0]), callback=self.parseDetails, encoding='utf-8')
             request.meta['item'] = item
             yield request
 
