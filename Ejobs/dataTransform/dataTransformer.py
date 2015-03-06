@@ -151,6 +151,21 @@ class MasterDataSetup():
 
             print 'insert into T_departments(departmentId,departmentName) values (%i,%s);' % (int(row['DepartmentId']),row['Department'])
 
+    def careerLevelMasterData(self):
+        file_name = 'Carrer Levels.csv'
+        delimiter = ';'
+        quote_character = '"'
+        csv_fp = open(file_name, 'rb')
+        csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
+        current_row = 0
+        for row in csv_reader:
+            current_row += 1
+            # Use heading rows as field names for all other rows.
+            if current_row == 1:
+                csv_reader.fieldnames = row['undefined-fieldnames']
+                continue
+
+            print 'insert into T_careerLevel(careerLevelId,careerLevelName) values (%i,%s);' % (int(row['CarrerLevelId']),row['CarrerLevel'])
 
     def test_con(self,con):
         cur = con.cursor()
@@ -182,3 +197,4 @@ if __name__ == "__main__":
     ora.cityMasterData()
     ora.industryMasterData()
     ora.departmentsMasterData()
+    ora.careerLevelMasterData()
