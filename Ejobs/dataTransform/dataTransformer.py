@@ -1,5 +1,6 @@
 import kombu
 import kombu.entity
+import os
 # import cx_Oracle
 from scrapy.utils.serialize import ScrapyJSONEncoder
 from scrapy.conf import settings
@@ -13,6 +14,7 @@ __author__ = 'AndreiTataru'
 
 class RabbitmqConsumer():
 
+
     def __init__(self):
         host_name = settings.get('BROKER_HOST')
         port = settings.get('BROKER_PORT')
@@ -20,6 +22,9 @@ class RabbitmqConsumer():
         password = settings.get('BROKER_PASSWORD')
         virtual_host = settings.get('BROKER_VIRTUAL_HOST')
         encoder_class = settings.get('MESSAGE_Q_SERIALIZER', ScrapyJSONEncoder)
+
+
+
         self.q_connection = kombu.Connection('amqp://'+userid+':'+password+'@'+host_name+':'+str(port)+'/'+virtual_host)
         self.exchange = kombu.entity.Exchange(name='JobAds', durable=True)
         self.encoder = encoder_class()
@@ -62,7 +67,7 @@ class MasterDataSetup():
     def __init__(self):
         #self.con = cx_Oracle.connect('c##azyl/azyl@azyl13.no-ip.org:1522/pdbazyl13')
         #self.test_con(self.con)
-        pass
+        self.outputdir = 'OutputSqls'
 
 
     def countryMasterData(self):
@@ -72,6 +77,9 @@ class MasterDataSetup():
          csv_fp = open(file_name, 'rb')
          csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
          current_row = 0
+
+         f = open(os.path.join(self.outputdir, 'T_country.sql'),'w')
+
          for row in csv_reader:
              current_row += 1
              # Use heading rows as field names for all other rows.
@@ -79,8 +87,8 @@ class MasterDataSetup():
                  csv_reader.fieldnames = row['undefined-fieldnames']
                  continue
 
-             print 'insert into T_country (countryId, countryName, isoCountryCodeA2, isoCountryCodeA2) values (%s,%s,%s,%s);' % (row['Number'],row['Country'],row['A 2'], row['A 3'])
-
+             a = "insert into T_country (countryId, countryName, isoCountryCodeA2, isoCountryCodeA2) values (q'!%s!',q'!%s!',q'!%s!',q'!%s!');" % (row['Number'],row['Country'],row['A 2'], row['A 3'])
+             f.write(a+'\n')
 
     def countyMasterData(self):
         file_name = 'coduri counties.csv'
@@ -89,6 +97,8 @@ class MasterDataSetup():
         csv_fp = open(file_name, 'rb')
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
         current_row = 0
+        f = open(os.path.join(self.outputdir, 'T_county.sql'),'w')
+
         for row in csv_reader:
             current_row += 1
             # Use heading rows as field names for all other rows.
@@ -96,7 +106,8 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            print 'insert into T_county (countyId, countyName, countryId, countyCapital) values (%s,%s,%i,%s);' % (row['ISO'],row['County'],642, row['Capital'])
+            a = "insert into T_county (countyId, countyName, countryId, countyCapital) values (q'!%s!',q'!%s!',%i,q'!%s!');" % (row['ISO'],row['County'],642, row['Capital'])
+            f.write(a+'\n')
 
     def cityMasterData(self):
         file_name = 'coduri siruta Romania.csv'
@@ -105,6 +116,8 @@ class MasterDataSetup():
         csv_fp = open(file_name, 'rb')
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
         current_row = 0
+        f = open(os.path.join(self.outputdir, 'T_city.sql'),'w')
+
         for row in csv_reader:
             current_row += 1
             # Use heading rows as field names for all other rows.
@@ -116,7 +129,9 @@ class MasterDataSetup():
             else:
                 mediu='R'
 
-            print 'insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (%s,%s,%s,%s,%s,%s,%i);' % (row['Cod SIRUTA'],mediu,row['Numele localitatii'],'',row['Numele localitatii superioare'],row['Cod judet'],642)
+
+            a = "insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (q'!%s!',q'!%s!',q'!%s!',q'!%s!',q'!%s!',q'!%s!',%i);" % (row['Cod SIRUTA'],mediu,row['Numele localitatii'],'',row['Numele localitatii superioare'],row['Cod judet'],642)
+            f.write(a+'\n')
 
     def industryMasterData(self):
         file_name = 'Industry.csv'
@@ -125,6 +140,8 @@ class MasterDataSetup():
         csv_fp = open(file_name, 'rb')
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
         current_row = 0
+        f = open(os.path.join(self.outputdir, 'T_industry.sql'),'w')
+
         for row in csv_reader:
             current_row += 1
             # Use heading rows as field names for all other rows.
@@ -132,8 +149,8 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            print 'insert into T_industry (industryId,industryName,industryNameAlt) values (%i,%s,%s);' % (int(row['IndustryId']),row['Industry'],'')
-
+            a = "insert into T_industry (industryId,industryName,industryNameAlt) values (%i,q'!%s!',q'!%s!');" % (int(row['IndustryId']),row['Industry'],'')
+            f.write(a+'\n')
 
     def departmentsMasterData(self):
         file_name = 'Departments.csv'
@@ -142,6 +159,8 @@ class MasterDataSetup():
         csv_fp = open(file_name, 'rb')
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
         current_row = 0
+        f = open(os.path.join(self.outputdir, 'T_departments.sql'),'w')
+
         for row in csv_reader:
             current_row += 1
             # Use heading rows as field names for all other rows.
@@ -149,7 +168,8 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            print 'insert into T_departments(departmentId,departmentName) values (%i,%s);' % (int(row['DepartmentId']),row['Department'])
+            a = "insert into T_departments(departmentId,departmentName) values (%i,q'!%s!');" % (int(row['DepartmentId']),row['Department'])
+            f.write(a+'\n')
 
     def careerLevelMasterData(self):
         file_name = 'Carrer Levels.csv'
@@ -158,6 +178,7 @@ class MasterDataSetup():
         csv_fp = open(file_name, 'rb')
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
         current_row = 0
+        f = open(os.path.join(self.outputdir, 'T_careerLevel.sql'),'w')
         for row in csv_reader:
             current_row += 1
             # Use heading rows as field names for all other rows.
@@ -165,8 +186,8 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            print 'insert into T_careerLevel(careerLevelId,careerLevelName) values (%i,%s);' % (int(row['CarrerLevelId']),row['CarrerLevel'])
-
+            a = "insert into T_careerLevel(careerLevelId,careerLevelName) values (%i,q'!%s!');" % (int(row['CarrerLevelId']),row['CarrerLevel'])
+            f.write(a+'\n')
 
     def driverLicenceMasterData(self):
         file_name = 'Driver licences.csv'
@@ -175,6 +196,7 @@ class MasterDataSetup():
         csv_fp = open(file_name, 'rb')
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
         current_row = 0
+        f = open(os.path.join(self.outputdir, 'T_driverLicence.sql'),'w')
         for row in csv_reader:
             current_row += 1
             # Use heading rows as field names for all other rows.
@@ -182,7 +204,8 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            print 'insert into T_driverLicence(driverLicenceId,driverLicenceDescription) values (%s,%s);' % (row['DriverLicenceId'],row['DriverLicenceDescription'])
+            a = "insert into T_driverLicence(driverLicenceId,driverLicenceDescription) values (q'!%s!',q'!%s!');" % (row['DriverLicenceId'],row['DriverLicenceDescription'])
+            f.write(a+'\n')
 
     def jobTypeMasterData(self):
         file_name = 'Job Types.csv'
@@ -191,6 +214,7 @@ class MasterDataSetup():
         csv_fp = open(file_name, 'rb')
         csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
         current_row = 0
+        f = open(os.path.join(self.outputdir, 'T_jobType.sql'),'w')
         for row in csv_reader:
             current_row += 1
             # Use heading rows as field names for all other rows.
@@ -198,7 +222,8 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            print 'insert into T_jobType(jobAdTypeId,jobAdTypeName) values (%s,%s);' % (int(row['JobAdTypeId']),row['JobAdTypeName'])
+            a = "insert into T_jobType(jobAdTypeId,jobAdTypeName) values (q'!%s!',q'!%s!');" % (int(row['JobAdTypeId']),row['JobAdTypeName'])
+            f.write(a+'\n')
 
     def test_con(self,con):
         cur = con.cursor()
