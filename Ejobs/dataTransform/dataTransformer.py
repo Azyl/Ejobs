@@ -87,7 +87,7 @@ class MasterDataSetup():
                  csv_reader.fieldnames = row['undefined-fieldnames']
                  continue
 
-             a = "insert into T_country (countryId, countryName, isoCountryCodeA2, isoCountryCodeA2) values (q'!%s!',q'!%s!',q'!%s!',q'!%s!');" % (row['Number'],row['Country'],row['A 2'], row['A 3'])
+             a = "insert into T_country (countryId, countryName, isoCountryCodeA2, isoCountryCodeA3) values (q'!%s!',q'!%s!',q'!%s!',q'!%s!');" % (row['Number'],row['Country'],row['A 2'], row['A 3'])
              f.write(a+'\n')
 
     def countyMasterData(self):
