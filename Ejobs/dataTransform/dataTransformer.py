@@ -225,6 +225,24 @@ class MasterDataSetup():
             a = "insert into T_jobType(jobAdTypeId,jobAdTypeName) values (q'!%s!',q'!%s!');" % (int(row['JobAdTypeId']),row['JobAdTypeName'])
             f.write(a+'\n')
 
+    def languageMasterData(self):
+        file_name = 'Language.csv'
+        delimiter = ';'
+        quote_character = '"'
+        csv_fp = open(file_name, 'rb')
+        csv_reader = csv.DictReader(csv_fp, fieldnames=[], restkey='undefined-fieldnames', delimiter=delimiter, quotechar=quote_character)
+        current_row = 0
+        f = open(os.path.join(self.outputdir, 'T_language.sql'),'w')
+        for row in csv_reader:
+            current_row += 1
+            # Use heading rows as field names for all other rows.
+            if current_row == 1:
+                csv_reader.fieldnames = row['undefined-fieldnames']
+                continue
+
+            a = "insert into T_language(languageId,languageName,languageNameAlt) values (%i,q'!%s!',q'!%s!');" % (int(row['LanguageId']),row['LanguageName'],row['LanguageNameAlt'])
+            f.write(a+'\n')
+
     def test_con(self,con):
         cur = con.cursor()
         cur.execute('select * from dual')
@@ -258,3 +276,4 @@ if __name__ == "__main__":
     ora.careerLevelMasterData()
     ora.driverLicenceMasterData()
     ora.jobTypeMasterData()
+    ora.languageMasterData()
