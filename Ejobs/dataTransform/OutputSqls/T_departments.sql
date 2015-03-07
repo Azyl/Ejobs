@@ -24,7 +24,7 @@ insert into T_departments(departmentId,departmentName,departmentNameAlt) values 
 insert into T_departments(departmentId,departmentName,departmentNameAlt) values (31,q'!Internet / e-Commerce!',q'!Internet / e-Commerce!');
 insert into T_departments(departmentId,departmentName,departmentNameAlt) values (36,q'!Manufacturing !',q'!Productie!');
 insert into T_departments(departmentId,departmentName,departmentNameAlt) values (38,q'!Telecommunications !',q'!Telecomunicatii!');
-insert into T_departments(departmentId,departmentName,departmentNameAlt) values (39,q'!Research & development !',q'!Cercetare - dezvoltare!');
+insert into T_departments(departmentId,departmentName,departmentNameAlt) values (39,q'!Research CHR(38) development !',q'!Cercetare - dezvoltare!');
 insert into T_departments(departmentId,departmentName,departmentNameAlt) values (40,q'!Transportation / Distribution!',q'!Transport / Distributie!');
 insert into T_departments(departmentId,departmentName,departmentNameAlt) values (41,q'!Procurement!',q'!Achizitii!');
 insert into T_departments(departmentId,departmentName,departmentNameAlt) values (42,q'!Printing / Publishing!',q'!Tipografii / Edituri!');

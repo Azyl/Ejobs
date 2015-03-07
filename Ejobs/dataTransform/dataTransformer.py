@@ -168,7 +168,7 @@ class MasterDataSetup():
                 csv_reader.fieldnames = row['undefined-fieldnames']
                 continue
 
-            a = "insert into T_departments(departmentId,departmentName,departmentNameAlt) values (%i,q'!%s!',q'!%s!');" % (int(row['DepartmentId']),row['Department'],row['DepartmentAlt'])
+            a = "insert into T_departments(departmentId,departmentName,departmentNameAlt) values (%i,q'!%s!',q'!%s!');" % (int(row['DepartmentId']),str(row['Department']).replace('&','CHR(38)'),str(row['DepartmentAlt']).replace('&','CHR(38)'))
             f.write(a+'\n')
 
     def careerLevelMasterData(self):
