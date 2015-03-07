@@ -1,0 +1,15 @@
+0 afli jobadtype
+daca e 1:
+
+1 afli care e tara
+country si countryId
+
+2 afli care e compania si companyid
+daca nu e faci insert in t_company
+
+3 inserezi scheletul jobad-ului
+
+4 afli care sunt departamentele si departmentId
+inserezi in t_activejobaddepartments
+
+5
