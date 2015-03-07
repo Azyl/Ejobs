@@ -154,9 +154,9 @@ CREATE TABLE "T_jobAdIndustry"(
 ALTER TABLE "T_jobAdIndustry" ADD CONSTRAINT "FK_jobAdIndustry" PRIMARY KEY ("industryId","jobAdId","companyId","countryId")
 /
 
--- Table PK_jobType
+-- Table T_jobType
 
-CREATE TABLE "PK_jobType"(
+CREATE TABLE "T_jobType"(
   "jobTypeId" Integer GENERATED ALWAYS AS IDENTITY(
     START WITH 1
     INCREMENT BY 1
@@ -167,9 +167,9 @@ CREATE TABLE "PK_jobType"(
 )
 /
 
--- Add keys for table PK_jobType
+-- Add keys for table T_jobType
 
-ALTER TABLE "PK_jobType" ADD CONSTRAINT "PK_jobType" PRIMARY KEY ("jobTypeId")
+ALTER TABLE "T_jobType" ADD CONSTRAINT "PK_jobType" PRIMARY KEY ("jobTypeId")
 /
 
 -- Table T_careerLevel
@@ -234,18 +234,18 @@ CREATE TABLE "T_jobAdCareerLevel"(
 ALTER TABLE "T_jobAdCareerLevel" ADD CONSTRAINT "FK_jobAdCareerLevel" PRIMARY KEY ("careerLevelId","jobAdId","companyId","countryId")
 /
 
--- Table PK_driverLicence
+-- Table T_driverLicence
 
-CREATE TABLE "PK_driverLicence"(
+CREATE TABLE "T_driverLicence"(
   "driveLicenceId" Varchar2(5 ) NOT NULL,
   "driverLicenceDescription" Varchar2(150 ),
   "driverLicenceDescriptionAlt" Varchar2(150 )
 )
 /
 
--- Add keys for table PK_driverLicence
+-- Add keys for table T_driverLicence
 
-ALTER TABLE "PK_driverLicence" ADD CONSTRAINT "PK_driverLicence" PRIMARY KEY ("driveLicenceId")
+ALTER TABLE "T_driverLicence" ADD CONSTRAINT "PK_driverLicence" PRIMARY KEY ("driveLicenceId")
 /
 
 -- Table T_jobAdDriverLicence
@@ -345,7 +345,7 @@ ALTER TABLE "T_jobAdCareerLevel" ADD CONSTRAINT "jobAd_to_carrerLevels" FOREIGN 
 ALTER TABLE "T_jobAdDriverLicence" ADD CONSTRAINT "jobAd_to_driverLicencesses" FOREIGN KEY ("jobAdId", "companyId", "countryId") REFERENCES "T_jobAd" ("jobAdId", "companyId", "countryId")
 /
 
-ALTER TABLE "T_jobAdDriverLicence" ADD CONSTRAINT "driverLicence_to_jobAds" FOREIGN KEY ("driveLicenceId") REFERENCES "PK_driverLicence" ("driveLicenceId")
+ALTER TABLE "T_jobAdDriverLicence" ADD CONSTRAINT "driverLicence_to_jobAds" FOREIGN KEY ("driveLicenceId") REFERENCES "T_driverLicence" ("driveLicenceId")
 /
 
 ALTER TABLE "T_jobAdCity" ADD CONSTRAINT "jobAds_to_city" FOREIGN KEY ("jobAdId", "companyId", "countryId") REFERENCES "T_jobAd" ("jobAdId", "companyId", "countryId")
@@ -354,7 +354,7 @@ ALTER TABLE "T_jobAdCity" ADD CONSTRAINT "jobAds_to_city" FOREIGN KEY ("jobAdId"
 ALTER TABLE "T_jobAdCity" ADD CONSTRAINT "cities_to_jobAd" FOREIGN KEY ("cityId", "countyId", "countryId1") REFERENCES "T_city" ("cityId", "countyId1", "countryId")
 /
 
-ALTER TABLE "T_jobAdJobType" ADD CONSTRAINT "jobType_to_jobAds" FOREIGN KEY ("jobTypeId") REFERENCES "PK_jobType" ("jobTypeId")
+ALTER TABLE "T_jobAdJobType" ADD CONSTRAINT "jobType_to_jobAds" FOREIGN KEY ("jobTypeId") REFERENCES "T_jobType" ("jobTypeId")
 /
 
 ALTER TABLE "T_jobAdJobType" ADD CONSTRAINT "jobAds_to_jobType" FOREIGN KEY ("jobAdId", "companyId", "countryId") REFERENCES "T_jobAd" ("jobAdId", "companyId", "countryId")
