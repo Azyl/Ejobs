@@ -1,8 +1,8 @@
 PL/SQL Developer Test script 3.0
-307
+312
 -- Created on 07-03-2015 2124:2I2:12 by ANDREITATARU 
 DECLARE
-  Test_Json       VARCHAR2(32767) := '{"Departament": ["IT Software"], "CompanyName": ["SOFT GALAXY ROMANIA"], "JobAdDescription": ["<div class=\"job-content\">\r\n\r\n                            <div class=\"job-content-block\">\r\n                    <h2>Candidatul ideal:</h2>\r\n                    <p>Excellent knowledge of the Android SDK<br>    Knowledge of XML and JSON a requirement<br>    Knowledge of SqlLite and a working experience in SQL databases<br>    Knowledge of HTML and Javascript a plus<br>    Coding standards, organizational programming skills and good commenting practices is important</p>\r\n                </div>\r\n            \r\n                            <div class=\"job-content-block\" itemprop=\"description\">\r\n                    <h2>Descrierea jobului:</h2>\r\n                    <p>-     Development of mobile Android based apps.<br>-     Deal with clients data, feeds and designs.<br>-     Co-operation with other development team members (e.g. Project manager, Web programmers, graphic designers, and authors, quality assurance) in the production of a finished product.<br> -   Ability to work on project without detailed instructions; taking the initiative with this job is important.<br>-    On-going maintenance of existing projects.</p>\r\n                </div>\r\n            \r\n                            <div class=\"job-content-block\">\r\n                    <h2>Descrierea companiei:</h2>\r\n                    <p>Soft Galaxy is a privately held company based in Bucharest and Tel Aviv. We bring ideas to life by providing industry standard solutions to businesses, from start-up companies to multinational corporations.</p>\n<p>We are a technology solutions company with a mission to provide high-quality technology and outsourcing services that provide a substantial competitive advantage to our clients.</p>\n<p>We provide the ongoing skill development to ensure that professionals working on your projects are trained in leading technologies to support your information technology hardware, software or network infrastructure.</p>\n<p>Our office in Bucharest is located in the French Quarter (near Herastrau Park) with easy access from the tram, metro and busses. Our rapidly growing Bucharest team is made up of Development, Engineering, Quality Assurance, and Support and Operations professionals who are responsible for engineering our company\u2019s cutting edge product offerings and supporting our international clients.\u00a0</p>\n<p>At this time, Soft Galaxy is looking for smart, motivated people to join the Bucharest team and grow our capabilities in each department. \u00a0Working at Soft Galaxy means having the opportunity to work on distributed, multinational teams.\u00a0 Soft Galaxy opens the door for employees to receive technical training and significant growth in their field, as well as the potential opportunity to travel throughout Europe, North America and Eurasian Sector.\u00a0 To find out more about who we are and what we do, visit www.softgalaxy.ro</p>\r\n                </div>\r\n            \r\n        </div>"], "JobTitle": ["Android Developer - Excellent Salary Package "], "TipJob": ["Full time"], "JobAdType": 1, "Oferta": ["> 1500 EURO / month"], "ScrapeDate": "2015-03-06 22:22:49", "JobAddLink": "http://www.ejobs.ro/user/locuri-de-munca/android-developer-excellent-salary-package/659061/sqi", "JobAdStartDate": "06 Mar 2015", "Orase": ["Bucuresti"], "JobAdApplicantsNr": "\r\n                                                    1\r\n                                            ", "JobAdSelectionCriteria": [], "JobAdExpireDate": "06 Apr 2015", "NrJoburi": "\r\n                        4\r\n                    ", "SourcePage": "http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=", "NivelCariera": ["Entry-Level/Primii 3 Ani Exp", "Mid-Level/Peste 3 Ani Exp", "Manager/Executive Position"]}';
+  Test_Json       VARCHAR2(32767) := '{"Departament": ["Medicina umana"], "CompanyName": ["Reach HR"], "JobAdDescription": ["<p>\u2022 Datele de identificare ale tuturor companiilor care publica anunturi de recrutare pe eJobs.ro sunt verificate de consultantii nostri. eJobs.ro nu influenteaza, insa, procesul de recrutare desfasurat de catre companii.</p>", "<p>\u2022 Analizati cu atentie informatiile din cadrul anunturilor de recrutare! Daca aveti dubii in privinta veridicitatii anumitor date sau in cazul unor solicitari suplimentare ale angajatorilor (trimiterea de documente personale, sume de bani etc.), va rugam sa ne scrieti la <a href=\"mailto:contact@ejobs.ro\">contact@ejobs.ro</a>.</p>"], "JobTitle": ["Health Care Assistants with or without working experience (England and Scotland) Final Interviews in Bucharest and Iasi "], "TipJob": ["Full time"], "JobAdType": 1, "Oferta": ["unspecified"], "ScrapeDate": "2015-03-08 09:12:22", "JobAddLink": "http://www.ejobs.ro/user/locuri-de-munca/health-care-assistants-with-or-without-working-experience-england-and-scotland-final-interviews-in-bucharest-and-iasi/659015/sqi", "JobAdStartDate": "06 Mar 2015", "Orase": ["Bucuresti", "Constanta", "Iasi"], "JobAdApplicantsNr": "\r\n                                                    17\r\n                                            ", "JobAdSelectionCriteria": [], "JobAdExpireDate": "06 Apr 2015", "NrJoburi": "\r\n                        50\r\n                    ", "SourcePage": "http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=", "NivelCariera": ["Student", "Entry-Level/Primii 3 Ani Exp", "Mid-Level/Peste 3 Ani Exp", "FaraStudiiSup/Necalificat"], "Industry": ["Medicina / Sanatate"]}';
   Printme         NUMBER := NULL;
   Obj             Json;
   Tempobj         Json;
@@ -161,12 +161,13 @@ BEGIN
             FOR Iter IN 1 .. Templist.Count
             LOOP
               Tempdata := Templist.Get(Iter);
-              Dbms_Output.Put_Line('jobAd career level: ' || Tempdata.Get_String);
+              Dbms_Output.Put_Line('jobAd careerLevel: ' || Tempdata.Get_String);
               BEGIN
                 SELECT Careerlevelid
                   INTO Careerlevelid
                   FROM t_Careerlevel t
-                 WHERE TRIM(t.Careerlevelnamealt) = TRIM(Tempdata.Get_String);
+                 WHERE TRIM(t.Careerlevelnamealt) = TRIM(Tempdata.Get_String)
+                    OR TRIM(t.Careerlevelname) = TRIM(Tempdata.Get_String);
                 --insert into T_jobAdCareerLevel
                 --dbms_output.put_line('inserting: '||Jobadid||' '||Companyid||' '||Countryid||' '||careerLevelId);
                 INSERT INTO t_Jobadcareerlevel
@@ -274,7 +275,11 @@ BEGIN
               Tempdata := Templist.Get(Iter);
               Dbms_Output.Put_Line('jobAd industry: ' || Tempdata.Get_String);
               BEGIN
-                SELECT Industryid INTO Industryid FROM t_Industry t WHERE TRIM(t.Industryname) = TRIM(Tempdata.Get_String);
+                SELECT Industryid
+                  INTO Industryid
+                  FROM t_Industry t
+                 WHERE TRIM(t.Industryname) = TRIM(Tempdata.Get_String)
+                    OR TRIM(t.Industrynamealt) = TRIM(Tempdata.Get_String);
                 --insert into T_jobAdIndustry
                 --dbms_output.put_line('inserting: '||Jobadid||' '||Companyid||' '||Countryid||' '||industryid);
                 INSERT INTO t_Jobadindustry
