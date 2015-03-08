@@ -23,3 +23,11 @@ inserezi in t_jobadlanguage
 
 8 afli care este industry industryid
 inserezi in t_jobadindustry
+
+9 alfi care este city si cityid
+inserezi in jobadcity
+
+10 updatezi jobad cu detaliile
+
+tbd
+add validations and rollback deletions acordinglly from related tables.
