@@ -329,13 +329,13 @@ BEGIN
                 SELECT Cityid, Countyid
                   INTO Cityid_t, Countyid_t
                   FROM t_City t
-                 WHERE TRIM(t.Cityname) = TRIM(Tempdata.Get_String);
+                 WHERE TRIM(t.Cityname) = Upper(TRIM(Tempdata.Get_String));
                 --insert into T_jobAdcity
                 --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||cityid_t||' '||Countyid_t);
-                INSERT INTO T_jobAdcity
-                  (Jobadid, Companyid, Countryid,cityId,countyId)
+                INSERT INTO t_Jobadcity
+                  (Jobadid, Companyid, Countryid, Cityid, Countyid)
                 VALUES
-                  (Jobadid_Scr, Companyid_t, Countryid_t,cityId_t,Countyid_t);
+                  (Jobadid_Scr, Companyid_t, Countryid_t, Cityid_t, Countyid_t);
                 COMMIT;
                 Dbms_Output.Put_Line('inserted into T_jobAdcity');
               EXCEPTION

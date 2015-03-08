@@ -1,5 +1,5 @@
 PL/SQL Developer Test script 3.0
-468
+482
 -- Created on 07-03-2015 2124:2I2:12 by ANDREITATARU 
 DECLARE
   Test_Json           VARCHAR2(32767) := '{"Departament": ["Medicina umana"], "CompanyName": ["Reach HR"], "JobAdDescription": ["<p>\u2022 Datele de identificare ale tuturor companiilor care publica anunturi de recrutare pe eJobs.ro sunt verificate de consultantii nostri. eJobs.ro nu influenteaza, insa, procesul de recrutare desfasurat de catre companii.</p>", "<p>\u2022 Analizati cu atentie informatiile din cadrul anunturilor de recrutare! Daca aveti dubii in privinta veridicitatii anumitor date sau in cazul unor solicitari suplimentare ale angajatorilor (trimiterea de documente personale, sume de bani etc.), va rugam sa ne scrieti la <a href=\"mailto:contact@ejobs.ro\">contact@ejobs.ro</a>.</p>"], "JobTitle": ["Health Care Assistants with or without working experience (England and Scotland) Final Interviews in Bucharest and Iasi "], "TipJob": ["Full time"], "JobAdType": 1, "Oferta": ["unspecified"], "ScrapeDate": "2015-03-08 09:12:22", "JobAddLink": "http://www.ejobs.ro/user/locuri-de-munca/health-care-assistants-with-or-without-working-experience-england-and-scotland-final-interviews-in-bucharest-and-iasi/659015/sqi", "JobAdStartDate": "21 Mar 2015", "Orase": ["Bucuresti", "Constanta", "Iasi"], "JobAdApplicantsNr": "\r\n                                                    17\r\n                                            ", "JobAdSelectionCriteria": [], "JobAdExpireDate": "06 Apr 2015", "NrJoburi": "\r\n                        50\r\n                    ", "SourcePage": "http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=", "NivelCariera": ["Student", "Entry-Level/Primii 3 Ani Exp", "Mid-Level/Peste 3 Ani Exp", "FaraStudiiSup/Necalificat"], "Industry": ["Medicina / Sanatate"]}';
@@ -329,18 +329,32 @@ BEGIN
                 SELECT Cityid, Countyid
                   INTO Cityid_t, Countyid_t
                   FROM t_City t
-                 WHERE TRIM(t.Cityname) = TRIM(Tempdata.Get_String);
+                 WHERE TRIM(t.Cityname) = Upper(TRIM(Tempdata.Get_String));
                 --insert into T_jobAdcity
                 --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||cityid_t||' '||Countyid_t);
-                INSERT INTO T_jobAdcity
-                  (Jobadid, Companyid, Countryid,cityId,countyId)
+                INSERT INTO t_Jobadcity
+                  (Jobadid, Companyid, Countryid, Cityid, Countyid)
                 VALUES
-                  (Jobadid_Scr, Companyid_t, Countryid_t,cityId_t,Countyid_t);
+                  (Jobadid_Scr, Companyid_t, Countryid_t, Cityid_t, Countyid_t);
                 COMMIT;
                 Dbms_Output.Put_Line('inserted into T_jobAdcity');
               EXCEPTION
                 WHEN No_Data_Found THEN
                   Dbms_Output.Put_Line('city does not exist check the master data');
+                WHEN Too_Many_Rows THEN
+                  SELECT Cityid, Countyid
+                    INTO Cityid_t, Countyid_t
+                    FROM t_City t
+                   WHERE TRIM(t.Cityname) = Upper(TRIM(Tempdata.Get_String))
+                     AND t.Citytype = 'U';
+                  --insert into T_jobAdcity
+                  --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||cityid_t||' '||Countyid_t);
+                  INSERT INTO t_Jobadcity
+                    (Jobadid, Companyid, Countryid, Cityid, Countyid)
+                  VALUES
+                    (Jobadid_Scr, Companyid_t, Countryid_t, Cityid_t, Countyid_t);
+                  COMMIT;
+                  Dbms_Output.Put_Line('inserted into T_jobAdcity');
               END;
             END LOOP;
           ELSE

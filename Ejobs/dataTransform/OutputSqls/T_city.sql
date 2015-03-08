@@ -1582,6 +1582,7 @@ insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,coun
 insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (q'!12901!',q'!R!',q'!ZIMANDCUZ!',q'!!',q'!ZIMANDU NOU!',q'!AR!',642);
 insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (q'!12885!',q'!R!',q'!ZIMANDU NOU!',q'!!',q'!ZIMANDU NOU!',q'!AR!',642);
 insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (q'!11049!',q'!R!',q'!ZIMBRU!',q'!!',q'!GURAHONT!',q'!AR!',642);
+insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (q'!179132!',q'!U!',q'!BUCURESTI!',q'!!',q'!MUNICIPIUL BUCURESTI!',q'!B!',642);
 insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (q'!179141!',q'!U!',q'!BUCURESTI SECTORUL 1!',q'!!',q'!MUNICIPIUL BUCURESTI!',q'!B!',642);
 insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (q'!179150!',q'!U!',q'!BUCURESTI SECTORUL 2!',q'!!',q'!MUNICIPIUL BUCURESTI!',q'!B!',642);
 insert into T_city (cityId, cityType, cityName, cityNameAlt, parentCityName,countyId,countryId) values (q'!179169!',q'!U!',q'!BUCURESTI SECTORUL 3!',q'!!',q'!MUNICIPIUL BUCURESTI!',q'!B!',642);
