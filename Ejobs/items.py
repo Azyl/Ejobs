@@ -22,6 +22,7 @@ class EjobsJobAdscrapperItem(scrapy.Item):
     LimbiStraine = scrapy.Field()
     Oferta = scrapy.Field()
     Departament = scrapy.Field()
+    Industry = scrapy.Field()
     JobAdStartDate = scrapy.Field()
     JobAdExpireDate = scrapy.Field()
     NrJoburi = scrapy.Field()
