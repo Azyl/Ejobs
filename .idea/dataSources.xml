@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="562714171">
+    <data-source source="LOCAL" name="Oracle - pdbazyl13@azyl13.no-ip.org" uuid="2710a437-1a85-4c4e-8d25-694fbfafaf41">
+      <driver-ref>oracle</driver-ref>
+      <synchronize>true</synchronize>
+      <auto-commit>false</auto-commit>
+      <jdbc-driver>oracle.jdbc.OracleDriver</jdbc-driver>
+      <jdbc-url>jdbc:oracle:thin:@//azyl13.no-ip.org:1522/pdbazyl13</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>

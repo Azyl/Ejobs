@@ -1,8 +1,8 @@
 PL/SQL Developer Test script 3.0
-482
+483
 -- Created on 07-03-2015 2124:2I2:12 by ANDREITATARU 
 DECLARE
-  Test_Json           VARCHAR2(32767) := '{"Departament": ["Medicina umana"], "CompanyName": ["Reach HR"], "JobAdDescription": ["<p>\u2022 Datele de identificare ale tuturor companiilor care publica anunturi de recrutare pe eJobs.ro sunt verificate de consultantii nostri. eJobs.ro nu influenteaza, insa, procesul de recrutare desfasurat de catre companii.</p>", "<p>\u2022 Analizati cu atentie informatiile din cadrul anunturilor de recrutare! Daca aveti dubii in privinta veridicitatii anumitor date sau in cazul unor solicitari suplimentare ale angajatorilor (trimiterea de documente personale, sume de bani etc.), va rugam sa ne scrieti la <a href=\"mailto:contact@ejobs.ro\">contact@ejobs.ro</a>.</p>"], "JobTitle": ["Health Care Assistants with or without working experience (England and Scotland) Final Interviews in Bucharest and Iasi "], "TipJob": ["Full time"], "JobAdType": 1, "Oferta": ["unspecified"], "ScrapeDate": "2015-03-08 09:12:22", "JobAddLink": "http://www.ejobs.ro/user/locuri-de-munca/health-care-assistants-with-or-without-working-experience-england-and-scotland-final-interviews-in-bucharest-and-iasi/659015/sqi", "JobAdStartDate": "21 Mar 2015", "Orase": ["Bucuresti", "Constanta", "Iasi"], "JobAdApplicantsNr": "\r\n                                                    17\r\n                                            ", "JobAdSelectionCriteria": [], "JobAdExpireDate": "06 Apr 2015", "NrJoburi": "\r\n                        50\r\n                    ", "SourcePage": "http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=", "NivelCariera": ["Student", "Entry-Level/Primii 3 Ani Exp", "Mid-Level/Peste 3 Ani Exp", "FaraStudiiSup/Necalificat"], "Industry": ["Medicina / Sanatate"]}';
+  Test_Json           VARCHAR2(32767) := '{"Departament": ["IT Software", "Telecomunicatii"], "CompanyName": ["Fortech"], "JobAdDescription": ["<p>We are extending the team with experienced developers with strong background in Microsoft technologies, for our office in Cluj-Napoca.</p>", "<p>Benefits:<br> <br> * Stable project, long term partnership<br> * Well established ramp-up up plan, that allows knowledge transfer</p>", "<p>Why join us?</p>", "<p>Because we are a growing team working on several challenging products eager to continuously improve while delivering high quality solutions in a fast paced business environment.</p>", "<p> .NET Engineers will be joining agile global project teams working closely with our US partners. We are involved in multiple projects, ranging from high-traffic web applications, eCommerce, web services, and mobile apps, to internal support applications.</p>", "<p> You will have the opportunity to be part of an expanding business, travel on-site and get involved through all the stages of the development cycle of our software solutions.</p>", "<p>Our partner:</p>", "<p>US based leading provider of digital solutions and services for retail grocery, connecting retail brands to their consumers through eCommerce and online tools.</p>", "<p>Positions available:</p>", "<p>Mid/Senior level developers with minimum 2 years experience in software development on .Net framework.</p>"], "JobTitle": [".NET Web Developers - Mid/Senior (Cluj Office) "], "TipJob": ["Full time"], "JobAdType": 1, "Oferta": ["nespecificat"], "ScrapeDate": "2015-03-08 12:40:32", "JobAddLink": "http://www.ejobs.ro/user/locuri-de-munca/net-web-developers-mid-senior-cluj-office/658714/sqi", "JobAdStartDate": "05 Mar 2015", "Orase": ["Alba Iulia", "Brasov", "Bucuresti", "Cluj-Napoca", "Iasi"], "JobAdApplicantsNr": "\r\n                                                    5\r\n                                            ", "JobAdSelectionCriteria": ["Peste 2 ani experienta in munca"], "JobAdExpireDate": "05 Apr 2015", "NrJoburi": "\r\n                        2\r\n                    ", "SourcePage": "http://wwww.ejobs.ro/user/searchjobs?q=&oras%5B%5D=&departament%5B%5D=&industrie%5B%5D=&searchType=simple&time_span=&page_no=&page_results=", "NivelCariera": ["Mid-Level/Peste 3 Ani Exp", "Entry-Level/Primii 3 Ani Exp"], "Industry": ["IT / Telecom"]}';
   Printme             NUMBER := NULL;
   Obj                 Json;
   Tempobj             Json;
@@ -355,6 +355,7 @@ BEGIN
                     (Jobadid_Scr, Companyid_t, Countryid_t, Cityid_t, Countyid_t);
                   COMMIT;
                   Dbms_Output.Put_Line('inserted into T_jobAdcity');
+                
               END;
             END LOOP;
           ELSE
@@ -482,5 +483,11 @@ BEGIN
   --Pair_Value := Jobj.Get('"Departament"');
   --dbms_output.put_line(json_ext.get_string(Pair_Value));
 END;
+2
+40
 0
+-5
+32
+0
+-5
 0

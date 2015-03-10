@@ -31,3 +31,4 @@ inserezi in jobadcity
 
 tbd
 add validations and rollback deletions acordinglly from related tables.
+add logic for empty json_list as it enter infinite loop
