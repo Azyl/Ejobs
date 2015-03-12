@@ -76,17 +76,18 @@ class RabbitmqConsumer():
         item = dict(m.decode())
         self.oraClient.insertPayload(json.dumps(item))
         self.oraClient.connection.commit()
+        m.ack()
         # for field, possible_values in item.iteritems():
         #    print field, possible_values
 
         print "------->><<<>><<>><>>-------"
 
-        if item['JobAdType'] == 1:
-            print item['Oferta']
-        elif item['JobAdType'] == 2:
-            pass
-        else:
-            raise Exception("item['JobAdType'] is null")
+        # if item['JobAdType'] == 1:
+        #     print item['Oferta']
+        # elif item['JobAdType'] == 2:
+        #     pass
+        # else:
+        #     raise Exception("item['JobAdType'] is null")
 
 if __name__ == "__main__":
 
@@ -97,11 +98,14 @@ if __name__ == "__main__":
     rabbit.consumer.consume(no_ack=False)
     print 'Waiting for messages'
     i = 0
-    while i<10 :
-        rabbit.q_connection.drain_events()
-        i=i+1
-    with rabbit.consumer:
-        rabbit.q_connection.drain_events(timeout=1)
+    try:
+        while True :
+            rabbit.q_connection.drain_events()
+            i=i+1
+        with rabbit.consumer:
+            rabbit.q_connection.drain_events(timeout=1)
+    except KeyboardInterrupt:
+        print('done')
 
     # oraClient = OraLoad()
     # oraClient.insertPayload(payload='asda asd asda TEST')
