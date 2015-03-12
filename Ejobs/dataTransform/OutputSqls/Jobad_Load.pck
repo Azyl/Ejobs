@@ -4,141 +4,492 @@ CREATE OR REPLACE PACKAGE Jobad_Load IS
   -- Created : 07-03-2015 2024:29I29:29 8:29:29 PM
   -- Purpose : load job ads
 
-  TYPE t_Array IS TABLE OF VARCHAR2(255) INDEX BY BINARY_INTEGER;
-
-  TYPE Typ_Rec_Err_Tab IS TABLE OF Typ_Rec_Err;
-
-  FUNCTION Err_Details(Errval INTEGER) RETURN VARCHAR2;
-
-  FUNCTION List_Error(v_Binstr IN VARCHAR2) RETURN Typ_Rec_Err_Tab
-    PIPELINED;
-
   FUNCTION Insertjobad(Scrapy_Item VARCHAR2) RETURN INTEGER;
-
-  PROCEDURE Insertjobad(NAME IN OUT TYPE, NAME IN OUT TYPE, .. .);
 
 END Jobad_Load;
 /
 CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
 
-  FUNCTION Err_Details(Errval INTEGER) RETURN VARCHAR2 IS
-    Err_Array t_Array;
-  BEGIN
-    Err_Array(1) := 'Table 1: Resource usage';
-    Err_Array(2) := 'Table 2: TOP 10 programs by cpu time';
-    Err_Array(3) := 'Table 3: TOP 10 long operations';
-    Err_Array(4) := 'Table 4: TOP 10 IDLE Sesions';
-    Err_Array(5) := 'Table 5: DeadLocks';
-    Err_Array(6) := 'Table 6: Invalid Objects';
-    Err_Array(7) := 'Table 7: Tablespace utilization';
-    Err_Array(8) := 'Table 8: Temporary Tablespaces';
-    Err_Array(9) := 'Table 9: DB Data files';
-    Err_Array(10) := 'Table 10: Unextendable Objects';
-    Err_Array(11) := 'Table 11: Statistics job Status';
-    Err_Array(12) := 'Table 12: RMAN BackUP job Status';
-    Err_Array(13) := 'Table 13: RMAN BackUP job Status Date' Space Err_Array(14) := 'Table 14 : Disk Usage';
-    IF Errval BETWEEN 1 AND Err_Array.Count
-    THEN
-      RETURN Err_Array(Errval);
-    ELSE
-      Raise_Application_Error(-20000, 'There are only ' || Err_Array.Count || ' error codes');
-    END IF;
-  END Err_Details;
-
-  FUNCTION To_Base(p_Dec IN NUMBER, p_Base IN NUMBER) RETURN VARCHAR2 IS
-    l_Str VARCHAR2(255) DEFAULT NULL;
-    l_Num NUMBER DEFAULT p_Dec;
-    l_Hex VARCHAR2(16) DEFAULT '0123456789ABCDEF';
-  BEGIN
-    IF (p_Dec IS NULL OR p_Base IS NULL)
-    THEN
-      RETURN NULL;
-    END IF;
-    IF (Trunc(p_Dec) <> p_Dec OR p_Dec < 0)
-    THEN
-      RAISE Program_Error;
-    END IF;
-    LOOP
-      l_Str := Substr(l_Hex, MOD(l_Num, p_Base) + 1, 1) || l_Str;
-      l_Num := Trunc(l_Num / p_Base);
-      EXIT WHEN(l_Num = 0);
-    END LOOP;
-    RETURN l_Str;
-  END To_Base;
-
-  FUNCTION To_Dec(p_Str IN VARCHAR2, p_From_Base IN NUMBER DEFAULT 16) RETURN NUMBER IS
-    l_Num NUMBER DEFAULT 0;
-    l_Hex VARCHAR2(16) DEFAULT '0123456789ABCDEF';
-  BEGIN
-    IF (p_Str IS NULL OR p_From_Base IS NULL)
-    THEN
-      RETURN NULL;
-    END IF;
-    FOR i IN 1 .. Length(p_Str)
-    LOOP
-      l_Num := l_Num * p_From_Base + Instr(l_Hex, Upper(Substr(p_Str, i, 1))) - 1;
-    END LOOP;
-    RETURN l_Num;
-  END To_Dec;
-
-  FUNCTION To_Bin(p_Dec IN NUMBER) RETURN VARCHAR2 IS
-  BEGIN
-    RETURN To_Base(p_Dec, 2);
-  END To_Bin;
-
-  FUNCTION List_Error(v_Binstr IN VARCHAR2) RETURN Typ_Rec_Err_Tab
-    PIPELINED IS
-    Tab Typ_Rec_Err DEFAULT Typ_Rec_Err(NULL, NULL);
-    i   INTEGER;
-    j   VARCHAR2(1);
-    k   NUMBER(4) DEFAULT 0;
-    -- SELECT * FROM TABLE(Crisoftadm.List_Error(To_Bin(9)));
-  BEGIN
-    FOR i IN 1 .. Length(v_Binstr)
-    LOOP
-      j := Substr(v_Binstr, i, 1);
-      IF i != Length(v_Binstr)
-      THEN
-        IF j = '1'
-        THEN
-          k           := 1;
-          Tab.Errtype := 'Warning';
-          Tab.Errval  := Length(v_Binstr) - i;
-          PIPE ROW(Tab);
-        END IF;
-      ELSE
-        Tab.Errtype := 'Error';
-        Tab.Errval  := k + j;
-        PIPE ROW(Tab);
-      END IF;
-    END LOOP;
-  END List_Error;
-
   FUNCTION Insertjobad(Scrapy_Item VARCHAR2) RETURN INTEGER IS
-    Printme  NUMBER := NULL;
-    Obj      Json;
-    Tempdata Json_Value;
+  
+    Printme             NUMBER := NULL;
+    Obj                 Json;
+    Tempobj             Json;
+    Tempdata            Json_Value;
+    Templist            Json_List;
+    Jobadid_Scr         INTEGER;
+    Companyid_t         INTEGER;
+    Countryid_t         INTEGER;
+    Departmentid_t      INTEGER;
+    Jobadtypeid_t       INTEGER;
+    Careerlevelid_t     INTEGER;
+    Driverlicenceid_t   INTEGER;
+    Languageid_t        INTEGER;
+    Industryid_t        INTEGER;
+    Cityid_t            INTEGER;
+    Countyid_t          VARCHAR2(3);
+    Jobtitle_t          VARCHAR2(32767);
+    Jobadstartdate_t    VARCHAR2(100);
+    Jobadenddate_t      VARCHAR2(100);
+    Jobadpositionsnr_t  VARCHAR2(100);
+    Jobadapplicantsnr_t VARCHAR2(200);
+  
   BEGIN
   
+    Dbms_Output.Put_Line('Processing JSON input:');
     Obj := Json(Scrapy_Item);
     Obj.Print();
     IF (Obj.Exist('JobAdType'))
     THEN
-      Dbms_Output.Put_Line('JobAdType Yes');
+      Dbms_Output.Put_Line('jobAdType json found');
       Tempdata := Obj.Get('JobAdType');
       IF (Tempdata.Is_Number)
       THEN
         Printme := Tempdata.Get_Number;
+        IF (Printme IS NOT NULL AND Printme = 1)
+        THEN
+          Dbms_Output.Put_Line('JobAdType 1 Yes proceding to insert the jobAd');
+          Jobadid_Scr := Sq_Jobadid.Nextval;
+          Dbms_Output.Put_Line('jobadid = ' || Jobadid_Scr);
+        
+          --< country >--
+          Countryid_t := 642;
+          --toate anunturile sunt ale unor firme din Romania
+          --</ country />--   
+        
+          --< company >--
+          IF (Obj.Exist('CompanyName'))
+          THEN
+            Tempdata := Obj.Get('CompanyName');
+            Tempdata := Obj.Get('CompanyName');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              FOR Iter IN 1 .. Templist.Count
+              LOOP
+                Tempdata := Templist.Get(Iter);
+                Dbms_Output.Put_Line(Tempdata.Get_String);
+                -- get companyId
+                BEGIN
+                  SELECT Companyid INTO Companyid_t FROM t_Company t WHERE t.Companyname = Tempdata.Get_String;
+                  Dbms_Output.Put_Line('companyId = ' || Companyid_t || ' ' || Tempdata.Get_String);
+                EXCEPTION
+                  WHEN No_Data_Found THEN
+                    Dbms_Output.Put_Line('no company: ' || Tempdata.Get_String || ' in database, inserting new company');
+                    --insert into T_company
+                    INSERT INTO t_Company (Companyname, Countryid) VALUES (Tempdata.Get_String, Countryid_t);
+                    COMMIT;
+                    SELECT Companyid INTO Companyid_t FROM t_Company t WHERE t.Companyname = Tempdata.Get_String;
+                    Dbms_Output.Put_Line('company inserted: ' || Companyid_t);
+                END;
+              END LOOP;
+            ELSE
+              Dbms_Output.Put_Line('CompanyName should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no CompanyName key found');
+          END IF;
+          --</ company />--   
+        
+          --< jobAd initial insert >--
+          Dbms_Output.Put_Line('Inserting initial jobAd');
+          INSERT INTO t_Jobad (Jobadid, Companyid, Countryid) VALUES (Jobadid_Scr, Companyid_t, Countryid_t);
+          COMMIT;
+          --</ jobAd initial insert />--
+        
+          --< department >--
+          IF (Obj.Exist('Departament'))
+          THEN
+            Tempdata := Obj.Get('Departament');
+            Tempdata := Obj.Get('Departament');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              FOR Iter IN 1 .. Templist.Count
+              LOOP
+                Tempdata := Templist.Get(Iter);
+                Dbms_Output.Put_Line('jobAd department: ' || Tempdata.Get_String);
+                BEGIN
+                  SELECT Departmentid
+                    INTO Departmentid_t
+                    FROM t_Departments t
+                   WHERE TRIM(t.Departmentname) = TRIM(Tempdata.Get_String)
+                      OR TRIM(t.Departmentnamealt) = TRIM(Tempdata.Get_String);
+                  --insert into T_activeJobAdsDepartments
+                  --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||Departmentid_t);
+                  INSERT INTO t_Activejobadsdepartments
+                    (Jobadid, Companyid, Countryid, Departmentid)
+                  VALUES
+                    (Jobadid_Scr, Companyid_t, Countryid_t, Departmentid_t);
+                  COMMIT;
+                  Dbms_Output.Put_Line('inserted into T_activeJobAdsDepartments');
+                EXCEPTION
+                  WHEN No_Data_Found THEN
+                    Dbms_Output.Put_Line('department does not exist check the master data');
+                END;
+              END LOOP;
+            ELSE
+              Dbms_Output.Put_Line('Department should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no Departament key found');
+          END IF;
+          --</ department />--      
+        
+          --< jobType >--
+          IF (Obj.Exist('TipJob'))
+          THEN
+            Tempdata := Obj.Get('TipJob');
+            Tempdata := Obj.Get('TipJob');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              FOR Iter IN 1 .. Templist.Count
+              LOOP
+                Tempdata := Templist.Get(Iter);
+                Dbms_Output.Put_Line('jobAd tipjob: ' || Tempdata.Get_String);
+                BEGIN
+                  SELECT Jobadtypeid INTO Jobadtypeid_t FROM t_Jobtype t WHERE TRIM(t.Jobadtypename) = TRIM(Tempdata.Get_String);
+                  --insert into T_jobAdJobType
+                  --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||jobadtypeid_t);
+                  INSERT INTO t_Jobadjobtype
+                    (Jobadtypeid, Jobadid, Companyid, Countryid)
+                  VALUES
+                    (Jobadtypeid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+                  COMMIT;
+                  Dbms_Output.Put_Line('inserted into T_jobAdJobType');
+                EXCEPTION
+                  WHEN No_Data_Found THEN
+                    Dbms_Output.Put_Line('jobType does not exist check the master data');
+                END;
+              END LOOP;
+            ELSE
+              Dbms_Output.Put_Line('jobType should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no jobType key found');
+          END IF;
+          --</ jobType />-- 
+        
+          --< careerLevel >--
+          IF (Obj.Exist('NivelCariera'))
+          THEN
+            Tempdata := Obj.Get('NivelCariera');
+            Tempdata := Obj.Get('NivelCariera');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              FOR Iter IN 1 .. Templist.Count
+              LOOP
+                Tempdata := Templist.Get(Iter);
+                Dbms_Output.Put_Line('jobAd careerLevel: ' || Tempdata.Get_String);
+                BEGIN
+                  SELECT Careerlevelid
+                    INTO Careerlevelid_t
+                    FROM t_Careerlevel t
+                   WHERE TRIM(t.Careerlevelnamealt) = TRIM(Tempdata.Get_String)
+                      OR TRIM(t.Careerlevelname) = TRIM(Tempdata.Get_String);
+                  --insert into T_jobAdCareerLevel
+                  --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||careerLevelId_t);
+                  INSERT INTO t_Jobadcareerlevel
+                    (Careerlevelid, Jobadid, Companyid, Countryid)
+                  VALUES
+                    (Careerlevelid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+                  COMMIT;
+                  Dbms_Output.Put_Line('inserted into T_jobAdCareerLevel');
+                EXCEPTION
+                  WHEN No_Data_Found THEN
+                    Dbms_Output.Put_Line('careerLevel does not exist check the master data');
+                END;
+              END LOOP;
+            ELSE
+              Dbms_Output.Put_Line('careerLevel should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no careerLevel key found');
+          END IF;
+          --</ careerlevel />--
+        
+          --< driverLicence >--
+          IF (Obj.Exist('JobAdDriverLicence'))
+          THEN
+            Tempdata := Obj.Get('JobAdDriverLicence');
+            Tempdata := Obj.Get('JobAdDriverLicence');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              FOR Iter IN 1 .. Templist.Count
+              LOOP
+                Tempdata := Templist.Get(Iter);
+                Dbms_Output.Put_Line('jobAd driver licence: ' || Tempdata.Get_String);
+                BEGIN
+                  SELECT Driverlicenceid
+                    INTO Driverlicenceid_t
+                    FROM t_Driverlicence t
+                   WHERE TRIM(t.Driverlicenceid) = TRIM(Tempdata.Get_String);
+                  --insert into T_jobAdDriverLicence
+                  --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||driverLicenceId_t);
+                  INSERT INTO t_Jobaddriverlicence
+                    (Driverlicenceid, Jobadid, Companyid, Countryid)
+                  VALUES
+                    (Driverlicenceid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+                  COMMIT;
+                  Dbms_Output.Put_Line('inserted into T_jobAdDriverLicence');
+                EXCEPTION
+                  WHEN No_Data_Found THEN
+                    Dbms_Output.Put_Line('driverLicence does not exist check the master data');
+                END;
+              END LOOP;
+            ELSE
+              Dbms_Output.Put_Line('driverLicence should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no driverLicence key found');
+          END IF;
+          --</ driverLicence />--      
+        
+          --< language >--
+          IF (Obj.Exist('LimbiStraine'))
+          THEN
+            Tempdata := Obj.Get('LimbiStraine');
+            Tempdata := Obj.Get('LimbiStraine');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              FOR Iter IN 1 .. Templist.Count
+              LOOP
+                Tempdata := Templist.Get(Iter);
+                Dbms_Output.Put_Line('jobAd foreign languages: ' || Tempdata.Get_String);
+                BEGIN
+                  SELECT Languageid INTO Languageid_t FROM t_Language t WHERE TRIM(t.Languagename) = TRIM(Tempdata.Get_String);
+                  --insert into T_jobAdLanguage
+                  --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||languageid_t);
+                  INSERT INTO t_Jobadlanguage
+                    (Languageid, Jobadid, Companyid, Countryid)
+                  VALUES
+                    (Languageid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+                  COMMIT;
+                  Dbms_Output.Put_Line('inserted into T_jobAdLanguage');
+                EXCEPTION
+                  WHEN No_Data_Found THEN
+                    Dbms_Output.Put_Line('language does not exist check the master data');
+                END;
+              END LOOP;
+            ELSE
+              Dbms_Output.Put_Line('language should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no language key found');
+          END IF;
+          --</ language />--      
+        
+          --< industry >--
+          IF (Obj.Exist('Industry'))
+          THEN
+            Tempdata := Obj.Get('Industry');
+            Tempdata := Obj.Get('Industry');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              FOR Iter IN 1 .. Templist.Count
+              LOOP
+                Tempdata := Templist.Get(Iter);
+                Dbms_Output.Put_Line('jobAd industry: ' || Tempdata.Get_String);
+                BEGIN
+                  SELECT Industryid
+                    INTO Industryid_t
+                    FROM t_Industry t
+                   WHERE TRIM(t.Industryname) = TRIM(Tempdata.Get_String)
+                      OR TRIM(t.Industrynamealt) = TRIM(Tempdata.Get_String);
+                  --insert into T_jobAdIndustry
+                  --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||industryid_t);
+                  INSERT INTO t_Jobadindustry
+                    (Industryid, Jobadid, Companyid, Countryid)
+                  VALUES
+                    (Industryid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+                  COMMIT;
+                  Dbms_Output.Put_Line('inserted into T_jobAdIndustry');
+                EXCEPTION
+                  WHEN No_Data_Found THEN
+                    Dbms_Output.Put_Line('industry does not exist check the master data');
+                END;
+              END LOOP;
+            ELSE
+              Dbms_Output.Put_Line('industry should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no industry key found');
+          END IF;
+          --</ industry />--
+        
+          --< city >--
+          IF (Obj.Exist('Orase'))
+          THEN
+            Tempdata := Obj.Get('Orase');
+            Tempdata := Obj.Get('Orase');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              FOR Iter IN 1 .. Templist.Count
+              LOOP
+                Tempdata := Templist.Get(Iter);
+                Dbms_Output.Put_Line('jobAd city: ' || Tempdata.Get_String);
+                BEGIN
+                  SELECT Cityid, Countyid
+                    INTO Cityid_t, Countyid_t
+                    FROM t_City t
+                   WHERE TRIM(t.Cityname) = Upper(TRIM(Tempdata.Get_String));
+                  --insert into T_jobAdcity
+                  --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||cityid_t||' '||Countyid_t);
+                  INSERT INTO t_Jobadcity
+                    (Jobadid, Companyid, Countryid, Cityid, Countyid)
+                  VALUES
+                    (Jobadid_Scr, Companyid_t, Countryid_t, Cityid_t, Countyid_t);
+                  COMMIT;
+                  Dbms_Output.Put_Line('inserted into T_jobAdcity');
+                EXCEPTION
+                  WHEN No_Data_Found THEN
+                    Dbms_Output.Put_Line('city does not exist check the master data');
+                  WHEN Too_Many_Rows THEN
+                    SELECT Cityid, Countyid
+                      INTO Cityid_t, Countyid_t
+                      FROM t_City t
+                     WHERE TRIM(t.Cityname) = Upper(TRIM(Tempdata.Get_String))
+                       AND t.Citytype = 'U';
+                    --insert into T_jobAdcity
+                    --dbms_output.put_line('inserting: '||jobadid_scr||' '||Companyid_t||' '||Countryid_t||' '||cityid_t||' '||Countyid_t);
+                    INSERT INTO t_Jobadcity
+                      (Jobadid, Companyid, Countryid, Cityid, Countyid)
+                    VALUES
+                      (Jobadid_Scr, Companyid_t, Countryid_t, Cityid_t, Countyid_t);
+                    COMMIT;
+                    Dbms_Output.Put_Line('inserted into T_jobAdcity');
+                  
+                END;
+              END LOOP;
+            ELSE
+              Dbms_Output.Put_Line('Orase should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no Orase key found');
+          END IF;
+          --</ city />--  
+        
+          --<< update JobAd >>--
+        
+          --< jobAdTitle >--
+          IF (Obj.Exist('JobTitle'))
+          THEN
+            Tempdata := Obj.Get('JobTitle');
+            Tempdata := Obj.Get('JobTitle');
+            IF (Tempdata.Is_Array)
+            THEN
+              Templist := Json_List(Tempdata);
+              Tempdata := Templist.Get(1);
+              Dbms_Output.Put_Line('jobAd JobTitle: ' || Tempdata.Get_String);
+              Jobtitle_t := Tempdata.Get_String;
+            ELSE
+              Dbms_Output.Put_Line('JobTitle should be a list');
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no jobtitle key found');
+          END IF;
+          --</ jobAdTitle />--
+        
+          --< jobAdStartDate >--
+          IF (Obj.Exist('JobAdStartDate'))
+          THEN
+            Tempdata := Obj.Get('JobAdStartDate');
+            Tempdata := Obj.Get('JobAdStartDate');
+            IF (Tempdata.Is_Array)
+            THEN
+              Dbms_Output.Put_Line('JobAdStartDate should not be a list');
+            ELSE
+              Dbms_Output.Put_Line('jobAd JobAdStartDate: ' || Tempdata.Get_String);
+              Jobadstartdate_t := Tempdata.Get_String;
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no JobAdStartDate key found');
+          END IF;
+          --</ jobAdStartDate />--
+        
+          --< jobAdEndDate >--
+          IF (Obj.Exist('JobAdExpireDate'))
+          THEN
+            Tempdata := Obj.Get('JobAdExpireDate');
+            Tempdata := Obj.Get('JobAdExpireDate');
+            IF (Tempdata.Is_Array)
+            THEN
+              Dbms_Output.Put_Line('JobAdExpireDate should not be a list');
+            ELSE
+              Dbms_Output.Put_Line('jobAd jobAdEndDate: ' || Tempdata.Get_String);
+              Jobadenddate_t := Tempdata.Get_String;
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no JobAdExpireDate key found');
+          END IF;
+          --</ jobAdEndDate />--
+        
+          --< jobadpositionsnr >--
+          IF (Obj.Exist('NrJoburi'))
+          THEN
+            Tempdata := Obj.Get('NrJoburi');
+            Tempdata := Obj.Get('NrJoburi');
+            IF (Tempdata.Is_Array)
+            THEN
+              Dbms_Output.Put_Line('NrJoburi should not be a list');
+            ELSE
+              -- REPLACE(REPLACE( col_name, CHR(10) ), CHR(13) ) to get rid of blank lines
+              Dbms_Output.Put_Line('jobAd jobadpositionsnr: ' || TRIM(REPLACE(REPLACE(Tempdata.Get_String, Chr(10)), Chr(13))));
+              Jobadpositionsnr_t := TRIM(REPLACE(REPLACE(Tempdata.Get_String, Chr(10)), Chr(13)));
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no NrJoburi key found');
+          END IF;
+          --</ jobadpositionsnr />--
+        
+          --< Jobadapplicantsnr >--
+          IF (Obj.Exist('JobAdApplicantsNr'))
+          THEN
+            Tempdata := Obj.Get('JobAdApplicantsNr');
+            Tempdata := Obj.Get('JobAdApplicantsNr');
+            IF (Tempdata.Is_Array)
+            THEN
+              Dbms_Output.Put_Line('JobAdApplicantsNr should not be a list');
+            ELSE
+              -- REPLACE(REPLACE( col_name, CHR(10) ), CHR(13) ) to get rid of blank lines
+              Dbms_Output.Put_Line('jobAd Jobadapplicantsnr: ' || TRIM(REPLACE(REPLACE(Tempdata.Get_String, Chr(10)), Chr(13))));
+              Jobadapplicantsnr_t := TRIM(REPLACE(REPLACE(Tempdata.Get_String, Chr(10)), Chr(13)));
+            END IF;
+          ELSE
+            Dbms_Output.Put_Line('no JobAdApplicantsNr key found');
+          END IF;
+          --</ Jobadapplicantsnr />--
+        
+          --updating T_jobAd
+          Dbms_Output.Put_Line('updating JOB AD: ' || Jobadid_Scr || ' ' || Companyid_t || ' ' || Countryid_t);
+          UPDATE t_Jobad t
+             SET t.Jodtitle          = Jobtitle_t,
+                 t.Jobadstardate     = To_Date(Jobadstartdate_t, 'DD MON YYYY'),
+                 t.Jobadenddate      = To_Date(Jobadenddate_t, 'DD MON YYYY'),
+                 t.Jobadpositionsnr  = Jobadpositionsnr_t,
+                 t.Jobadapplicantsnr = Jobadapplicantsnr_t
+           WHERE t.Jobadid = Jobadid_Scr
+             AND t.Companyid = Companyid_t
+             AND t.Countryid = Countryid_t;
+          COMMIT;
+          Dbms_Output.Put_Line('updated tjobad jobadid: ' || Jobadid_Scr);
+          --<</ update jobAd />>--
+        
+        ELSE
+          Dbms_Output.Put_Line('JobAdType not 1 No proceding to flag the jobAd for a diferent type of processing');
+        END IF;
       END IF;
+    ELSE
+      Dbms_Output.Put_Line('jobAdType json not found, malformed jobAd, flagging as with no jobAdType err=1');
     END IF;
   
-    IF (Printme IS NOT NULL)
-    THEN
-      Dbms_Output.Put_Line(Printme);
-    END IF;
-  
-    RETURN 0;
-  END;
+  END Insertjobad;
 
 BEGIN
   -- Initialization

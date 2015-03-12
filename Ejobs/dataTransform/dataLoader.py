@@ -1,6 +1,8 @@
+
+
 __author__ = 'AndreiTataru'
 
-
+import json
 import kombu
 import kombu.entity
 import cx_Oracle
@@ -21,7 +23,14 @@ class OraLoad():
 
     def insertPayload(self,payload):
         cursor = cx_Oracle.Cursor(self.connection)
-        cursor.execute('insert into ')
+        ins_sql=('insert into T_SCRAPPEDADS (JOBADJSON,JSONTYPEID,PARSED) values (:1,:2,:3)')
+
+        try:
+            cursor.execute(ins_sql, (payload,1,'N'))
+        except:
+            self.connection.rollback()
+
+
 
     def testCon(self):
         cursor = cx_Oracle.Cursor(self.connection)
@@ -55,15 +64,18 @@ class RabbitmqConsumer():
         self.queue = self.queue(self.q_connection.channel())
         self.queue.declare()
 
+        self.oraClient = OraLoad()
         self.consumer = self.q_connection.Consumer(queues=self.queue, callbacks=[self.messageHandler])
 
         # self.producer = self.q_connection.Producer(exchange=self.exchange, routing_key=spider.name)
         # self.producer = self.q_connection.Producer(exchange=self.exchange)
 
-    def messageHandler(self, b, m):
+    def messageHandler(self, b, m , ):
         print b, m
-        item = dict(m.decode())
 
+        item = dict(m.decode())
+        self.oraClient.insertPayload(json.dumps(item))
+        self.oraClient.connection.commit()
         # for field, possible_values in item.iteritems():
         #    print field, possible_values
 
@@ -78,14 +90,19 @@ class RabbitmqConsumer():
 
 if __name__ == "__main__":
 
-    # rabbit = RabbitmqConsumer()
-    # rabbit.connect(routing_key='')
-    # rabbit.consumer.consume(no_ack=False)
-    # print 'Waiting for messages'
-    # while True:
-    #     rabbit.q_connection.drain_events()
-    # with rabbit.consumer:
-    #     rabbit.q_connection.drain_events(timeout=1)
 
-    oraClient = OraLoad()
-    oraClient.insertRow()
+
+    rabbit = RabbitmqConsumer()
+    rabbit.connect(routing_key='')
+    rabbit.consumer.consume(no_ack=False)
+    print 'Waiting for messages'
+    i = 0
+    while i<10 :
+        rabbit.q_connection.drain_events()
+        i=i+1
+    with rabbit.consumer:
+        rabbit.q_connection.drain_events(timeout=1)
+
+    # oraClient = OraLoad()
+    # oraClient.insertPayload(payload='asda asd asda TEST')
+    # oraClient.connection.commit()

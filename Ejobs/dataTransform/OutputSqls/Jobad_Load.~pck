@@ -4,13 +4,13 @@ CREATE OR REPLACE PACKAGE Jobad_Load IS
   -- Created : 07-03-2015 2024:29I29:29 8:29:29 PM
   -- Purpose : load job ads
 
-  FUNCTION Insertjobad(Scrapy_Item Varchar2) RETURN INTEGER;
+  FUNCTION Insertjobad(Scrapy_Item VARCHAR2) RETURN INTEGER;
 
 END Jobad_Load;
 /
 CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
 
-  FUNCTION Insertjobad(Scrapy_Item Varchar2) RETURN INTEGER IS
+  FUNCTION Insertjobad(Scrapy_Item VARCHAR2) RETURN INTEGER IS
     Printme  NUMBER := NULL;
     Obj      Json;
     Tempdata Json_Value;
