@@ -15,7 +15,7 @@ class LinkSpiderFull(scrapy.Spider,):
     def __init__(self):
         self.i = 1
         self.maxDepth = 100
-        self.runFree = False
+        self.runFree = True
 
     def parse(self, response):
         """
