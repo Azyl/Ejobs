@@ -76,7 +76,7 @@ class RabbitmqConsumer():
         item = dict(m.decode())
         self.oraClient.insertPayload(json.dumps(item))
         self.oraClient.connection.commit()
-        m.ack()
+        # m.ack()
         # for field, possible_values in item.iteritems():
         #    print field, possible_values
 
