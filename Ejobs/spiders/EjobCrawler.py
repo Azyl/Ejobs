@@ -63,6 +63,9 @@ class LinkSpiderFull(scrapy.Spider,):
 
         item = response.meta['item']
 
+        if not item['JobTitle']:
+            item['JobTitle'] = response.xpath(".//*[@id='job-page-left']/div/div/h1[@class='job-title']/text()").extract()
+
         if response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()") or not (response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/img/@src") or response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/a/img/@src")):
             item['JobAdType'] = 1
 
