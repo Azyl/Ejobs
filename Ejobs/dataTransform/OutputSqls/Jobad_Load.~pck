@@ -695,7 +695,7 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
                                  0,
                                  'processNewJobAds',
                                  'Total jobAds parsed: ' || To_Char(Newjobadsnr) || ' OK: ' ||
-                                 To_Char(Newjobadsnr - (Insertstate - Newjobadsnr)) || ' NOT OK: ' ||
+                                 To_Char(Newjobadsnr + (Insertstate - Newjobadsnr)) || ' NOT OK: ' ||
                                  To_Char(Newjobadsnr - Insertstate) || ' Job Ad parse complete ',
                                  l_Starttime,
                                  l_Startdate);

@@ -623,6 +623,7 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
           Dbms_Output.Put_Line('JobAdType not 1 No proceding to flag the jobAd for a diferent type of processing');
           Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) ||
                          'JobAdType not 1 No proceding to flag the jobAd for a diferent type of processing';
+          RETURN 1;
         END IF;
       END IF;
     ELSE

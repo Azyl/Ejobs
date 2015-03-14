@@ -36,9 +36,9 @@ class LinkSpiderFull(scrapy.Spider,):
             request.meta['item'] = item
             yield request
 
-        for JobAd in JobAdsResponse.xpath(".//*[contains(@class, 'anuntMic')]"):
+        for JobAd in JobAdsResponse.xpath(".//*[contains(@class, 'anuntMic')][contains(@class, 'noLogo')]"):
             item = EjobsJobAdscrapperItem()
-            item['JobTitle'] = JobAd.xpath("./div[2]/div[1]/a[2]/text()").extract()
+            item['JobTitle'] = JobAd.xpath("/div/div/a/text()").extract()
             item['SourcePage'] = response.url
             item['ScrapeDate'] = strftime("%Y-%m-%d %H:%M:%S", gmtime())
             item['JobAddLink'] = JobAd.xpath("./div/div/a[2]/@href").extract()[0]
