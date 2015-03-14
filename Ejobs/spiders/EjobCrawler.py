@@ -15,7 +15,7 @@ class LinkSpiderFull(scrapy.Spider,):
     def __init__(self):
         self.i = 1
         self.maxDepth = 100
-        self.runFree = False
+        self.runFree = True
 
     def parse(self, response):
         """
@@ -66,7 +66,10 @@ class LinkSpiderFull(scrapy.Spider,):
         if response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()") or not (response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/img/@src") or response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/a/img/@src")):
             item['JobAdType'] = 1
 
-            item['CompanyName'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()").extract()
+            if response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a"):
+                item['CompanyName'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a/text()").extract()
+            else:
+                item['CompanyName'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/text()").extract()
 
             if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='employmentType']"):
                 item['TipJob'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='employmentType']/li/text()").extract()
