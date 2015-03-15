@@ -86,6 +86,9 @@ class LinkSpiderFull(scrapy.Spider,):
             if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@data-plural='foreign languages']"):
                 item['LimbiStraine'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@data-plural='foreign languages']/li/text()").extract()
 
+            if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@data-plural='limbi straine']"):
+                item['LimbiStraine'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@data-plural='limbi straine']/li/text()").extract()
+
             if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/*[@itemprop='baseSalary']"):
                 item['Oferta'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/*[@itemprop='baseSalary']/text()").extract()
 
