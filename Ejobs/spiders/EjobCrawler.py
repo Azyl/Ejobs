@@ -63,6 +63,7 @@ class LinkSpiderFull(scrapy.Spider,):
 
         item = response.meta['item']
 
+
         if not item['JobTitle']:
             item['JobTitle'] = response.xpath(".//*[@id='job-page-left']/div/div/h1[@class='job-title']/text()").extract()
 

@@ -6,6 +6,7 @@ import json
 import kombu
 import kombu.entity
 import cx_Oracle
+import traceback
 from scrapy.utils.serialize import ScrapyJSONEncoder
 from scrapy.conf import settings
 
@@ -23,11 +24,12 @@ class OraLoad():
 
     def insertPayload(self,payload):
         cursor = cx_Oracle.Cursor(self.connection)
-        ins_sql=('insert into T_SCRAPPEDADS (JOBADJSON,JSONTYPEID,PARSED) values (:1,:2,:3)')
+        ins_sql=('insert into T_SCRAPPEDADS (JOBADJSON,JSONTYPEID,PARSED,SCRAPESESSIONID) values (:1,:2,:3,:4)')
 
         try:
-            cursor.execute(ins_sql, (payload,1,'N'))
+            cursor.execute(ins_sql, (payload,1,'N',2))
         except:
+            print traceback.format_exc()
             self.connection.rollback()
 
 
@@ -76,7 +78,7 @@ class RabbitmqConsumer():
         item = dict(m.decode())
         self.oraClient.insertPayload(json.dumps(item))
         self.oraClient.connection.commit()
-        m.ack()
+        # m.ack()
         # for field, possible_values in item.iteritems():
         #    print field, possible_values
 
@@ -99,7 +101,7 @@ if __name__ == "__main__":
     print 'Waiting for messages'
     i = 0
     try:
-        while True :
+        while i<5868 :
             rabbit.q_connection.drain_events()
             i=i+1
         with rabbit.consumer:
