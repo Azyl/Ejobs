@@ -10,7 +10,7 @@ class BestjobSpiderFull(scrapy.Spider,):
 
     name = "BestjobLinkSpiderFull"
     allowed_domanains = ["bestjobs.ro"]
-    start_urls = ["http://wwww.ejobs.ro/user/searchjobs?q=&oras[]=&departament[]=&industrie[]=&searchType=simple&time_span=&page_no=&page_results="]
+    start_urls = ["http://http://www.bestjobs.ro/"]
 
     def __init__(self):
         self.i = 1
@@ -58,15 +58,17 @@ class BestjobSpiderFull(scrapy.Spider,):
         if not item['JobTitle']:
             item['JobTitle'] = response.xpath(".//*[@id='job-page-left']/div/div/h1[@class='job-title']/text()").extract()
             # tipjob .//*[@class='jd-header']//*[@class='jd-content']/b[contains(text(),'Tip oferta')]/../following-sibling::td[2]/text()
-            item['JobAdType'] = 1
+            item['JobAdType'] = 3
 
             item['TipJob'] = response.xpath(".//*[@class='jd-header']//*[@class='jd-content']/b[contains(text(),'Tip oferta')]/../following-sibling::td[2]/text()").extract()
             item['NivelCariera'] = response.xpath(".//*[@class='jd-header']//*[@class='jd-content']/b[contains(text(),'Nivel cariera')]/../following-sibling::td[2]/text()").extract()
             item['Orase'] = response.xpath(".//*[@class='jd-header']//*[@class='jd-content']/b[contains(text(),'Oras(e)')]/../following-sibling::td[2]/text()").extract()
             item['Departament'] = response.xpath(".//*[@class='jd-header']//*[@class='jd-content']/b[contains(text(),'Domenii oferta')]/../following-sibling::td[2]//*[@href]/strong").extract()
             
-        
-            item['JobAdDescription'] = response.xpath("//*[@class='jd-main-job clearfix']//*[@class='jd-body'][1]").extract()
+            item['JobAdStartDate'] = response.xpath(".//*[@class='jd-main-job clearfix']//*[@class='jd-application'][1]//*[@style='width:330px;float:right;padding-left:14px;text-align:right;']/div[2]/b[1]/text()").extract()[0]
+            item['JobAdExpireDate'] = response.xpath(".//*[@class='jd-main-job clearfix']//*[@class='jd-application'][1]//*[@style='width:330px;float:right;padding-left:14px;text-align:right;']/div[2]/b[2]/text()").extract()[0]
+            item['JobAdApplicantsNr'] = response.xpath(".//*[@class='jd-main-job clearfix']//*[@class='jd-application'][1]//*[@style='width:330px;float:right;padding-left:14px;text-align:right;']/div[1]/text()").extract()[0] #.replace('La acest job au mai aplicat ','').replace(' persoane.','')
+            item['JobAdDescription'] = response.xpath(".//*[@class='jd-main-job clearfix']//*[@class='jd-body'][1]").extract()
 
             
 
@@ -95,10 +97,7 @@ class BestjobSpiderFull(scrapy.Spider,):
         #    if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='department']"):
         #        item['Departament'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='department']/li/a/text()").extract()
 
-        #    item['JobAdStartDate'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[1]/span/strong/text()").extract()[0]
-        #    item['JobAdExpireDate'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[1]/strong/text()").extract()[0]
-        #    item['NrJoburi'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[2]/div/div[1]/div[2]/text()").extract()[0]
-        #    item['JobAdApplicantsNr'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[2]/div/div[2]/div[2]/text()").extract()[0]
+       
         #    item['JobAdDescription'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[4]/div[1]/p").extract()
         
         #    item['JobAdSelectionCriteria'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[3]/ul/li/text()").extract()
@@ -113,4 +112,4 @@ class BestjobSpiderFull(scrapy.Spider,):
         #    except IndexError:
         #        item['JobAdDescriptionImage'] = response.xpath(".//*[@id='job-page-left']/div[2]/div[3]/a/img/@src").extract()[0]
 
-        #yield item
+        yield item
