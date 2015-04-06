@@ -38,12 +38,12 @@ class OraLoad():
             print traceback.format_exc()
             self.connection.rollback()
 
-    def insertPayload2(self,payload):
+    def insertPayload2(self,payload,jobadlink):
         cursor = cx_Oracle.Cursor(self.connection)
         ins_sql=('insert into T_SCRAPPEDADS (JOBADID,JOBADJSON,JSONTYPEID,PARSED,SCRAPESESSIONID) values (:1,:2,:3,:4,:5)')
 
         try:
-            cursor.execute(ins_sql, (gensha1(payload),payload,1,'N',1))
+            cursor.execute(ins_sql, (gensha1(jobadlink),payload,1,'N',1))
         except:
             print traceback.format_exc()
             self.connection.rollback()
@@ -91,9 +91,9 @@ class RabbitmqConsumer():
     def messageHandler(self, b, m , ):
         print b, m
 
-        item = dict(m.decode())
+        item = dict(m.decode()) 
         #self.oraClient.insertPayload(json.dumps(item))
-        self.oraClient.insertPayload2(json.dumps(item))
+        self.oraClient.insertPayload2(json.dumps(item),item['JobAddLink'])
         self.oraClient.connection.commit()
         m.ack()
         # for field, possible_values in item.iteritems():
