@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="dataSourceStorageLocal">
+    <data-source name="Oracle - pdbazyl13@azyl13.no-ip.org" uuid="2710a437-1a85-4c4e-8d25-694fbfafaf41">
+      <secret-storage>master_key</secret-storage>
+      <user-name>c##azyl</user-name>
+      <schema-pattern>*.C##AZYL *.SYS *.SYSTEM</schema-pattern>
+      <default-schemas>*.C##AZYL *.SYS *.SYSTEM</default-schemas>
+    </data-source>
+  </component>
+</project>

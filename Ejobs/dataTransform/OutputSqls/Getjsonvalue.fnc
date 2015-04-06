@@ -1,0 +1,28 @@
+CREATE OR REPLACE FUNCTION Getjsonvalue(Jsonstring VARCHAR2, Sparam VARCHAR2) RETURN VARCHAR2 IS
+  Returnvalue VARCHAR2(32767);
+  Obj         Json;
+  Tempdata    Json_Value;
+  Templist    Json_List;
+BEGIN
+  Obj := Json(Jsonstring);
+  IF (Obj.Exist(Sparam))
+  THEN
+    Tempdata := Obj.Get(Sparam);
+    IF (Tempdata.Is_Array)
+    THEN
+      Templist := Json_List(Tempdata);
+      IF Templist.Count > 0
+      THEN
+        FOR Iter IN 1 .. Templist.Count
+        LOOP
+          Tempdata    := Templist.Get(Iter);
+          Returnvalue := Returnvalue || Tempdata.Get_String || ';';
+        END LOOP;
+      END IF;
+    ELSE
+      Returnvalue := Tempdata.Get_String;
+    END IF;
+  END IF;
+  RETURN(Returnvalue);
+END Getjsonvalue;
+/

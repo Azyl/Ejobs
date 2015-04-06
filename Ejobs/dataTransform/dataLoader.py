@@ -14,7 +14,7 @@ from scrapy.conf import settings
 class OraLoad():
 
     def __init__(self):
-        self.connection = cx_Oracle.connect('c##azyl/azyl@azyl13.no-ip.org:1522/pdbazyl13')
+        self.connection = cx_Oracle.connect('azyl/azyl@azyl13.no-ip.org:1522/pdbazyl13')
 
     def __exit__(self):
         self.connection.close()
