@@ -312,7 +312,7 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
           LOOP
             Tempdata     := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
             Languageid_t := Getlanguageid(Language_Name => Tempdata);
-            IF (Departmentid_t IS NOT NULL)
+            IF (Languageid_t IS NOT NULL)
             THEN
               INSERT INTO t_Jobadlanguage
                 (Languageid, Jobadid, Companyid, Countryid)
@@ -520,16 +520,17 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
   
     COMMIT;
   
-  EXCEPTION
+    /*  EXCEPTION
     WHEN OTHERS THEN
       DELETE FROM t_Jobad t
        WHERE t.Jobadid = Jobadid_Scr
          AND t.Companyid = Companyid_t
          AND t.Countryid = Countryid_t;
+      Parse_Log_s := Parse_Log_s || SQLCODE || ' ' || SQLERRM || ' ' || Display_Error_Stack;
       UPDATE t_Scrappedads t SET t.Parselog = Parse_Log_s, t.Parsed = 'X' WHERE t.Scrapeid = Scrapeid_t;
       COMMIT;
-      Status := 1;
-    
+      Status := 1;*/
+  
   END Insertjobad;
 
   PROCEDURE Processnewjobads IS

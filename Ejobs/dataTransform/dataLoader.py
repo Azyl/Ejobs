@@ -7,6 +7,7 @@ import kombu
 import kombu.entity
 import cx_Oracle
 import traceback
+import hashlib
 from scrapy.utils.serialize import ScrapyJSONEncoder
 from scrapy.conf import settings
 
@@ -22,12 +23,27 @@ class OraLoad():
     def bulkLoad(self):
         pass
 
+    def gensha1(self,payload):
+        m = hashlib.sha1()
+        m.update(payload)
+        return m.hexdigest()
+
     def insertPayload(self,payload):
         cursor = cx_Oracle.Cursor(self.connection)
         ins_sql=('insert into T_SCRAPPEDADS (JOBADJSON,JSONTYPEID,PARSED,SCRAPESESSIONID) values (:1,:2,:3,:4)')
 
         try:
-            cursor.execute(ins_sql, (payload,1,'N',2))
+            cursor.execute(ins_sql, (payload,1,'N',1))
+        except:
+            print traceback.format_exc()
+            self.connection.rollback()
+
+    def insertPayload2(self,payload):
+        cursor = cx_Oracle.Cursor(self.connection)
+        ins_sql=('insert into T_SCRAPPEDADS (JOBADID,JOBADJSON,JSONTYPEID,PARSED,SCRAPESESSIONID) values (:1,:2,:3,:4,:5)')
+
+        try:
+            cursor.execute(ins_sql, (gensha1(payload),payload,1,'N',1))
         except:
             print traceback.format_exc()
             self.connection.rollback()
@@ -76,7 +92,8 @@ class RabbitmqConsumer():
         print b, m
 
         item = dict(m.decode())
-        self.oraClient.insertPayload(json.dumps(item))
+        #self.oraClient.insertPayload(json.dumps(item))
+        self.oraClient.insertPayload2(json.dumps(item))
         self.oraClient.connection.commit()
         m.ack()
         # for field, possible_values in item.iteritems():
@@ -101,7 +118,7 @@ if __name__ == "__main__":
     print 'Waiting for messages'
     i = 0
     try:
-        while i<5868 :
+        while True:
             rabbit.q_connection.drain_events()
             i=i+1
         with rabbit.consumer:
