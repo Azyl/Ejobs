@@ -52,6 +52,31 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
     RETURN Temp_String;
   END;
 
+  FUNCTION Display_Call_Stack RETURN VARCHAR2 AS
+    Temp_String VARCHAR2(32767);
+    l_Depth     PLS_INTEGER;
+  BEGIN
+    l_Depth := Utl_Call_Stack.Dynamic_Depth;
+  
+    Dbms_Output.Put_Line('***** Call Stack Start *****');
+  
+    Temp_String := Temp_String || Chr(13) || Chr(10) || 'Depth     Lexical   Line      Owner     Edition   Name';
+    Temp_String := Temp_String || Chr(13) || Chr(10) || '.         Depth     Number';
+    Temp_String := Temp_String || Chr(13) || Chr(10) || '--------- --------- --------- --------- --------- --------------------';
+  
+    FOR i IN REVERSE 1 .. l_Depth
+    LOOP
+      Temp_String := Temp_String || Chr(13) || Chr(10) || Rpad(i, 10) || Rpad(Utl_Call_Stack.Lexical_Depth(i), 10) ||
+                     Rpad(To_Char(Utl_Call_Stack.Unit_Line(i), '99'), 10) || Rpad(Nvl(Utl_Call_Stack.Owner(i), ' '), 10) ||
+                     Rpad(Nvl(Utl_Call_Stack.Current_Edition(i), ' '), 10) ||
+                     Utl_Call_Stack.Concatenate_Subprogram(Utl_Call_Stack.Subprogram(i));
+    END LOOP;
+  
+    Temp_String := Temp_String || Chr(13) || Chr(10) || '***** Call Stack End *****';
+  
+    RETURN Temp_String;
+  END;
+
   PROCEDURE Pr_Log_Job_Message_Error(Sqlcode_In   IN INTEGER,
                                      Sqlerrm_In   IN VARCHAR2,
                                      Insert_In    IN INTEGER,
@@ -134,7 +159,9 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
   
     Parse_Log_s := Parse_Log_s || 'Processing JSON input:';
     Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || Scrapy_Item;
-    Temp_s      := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdType');
+  
+    Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdType');
+  
     IF (Temp_s IS NOT NULL)
     THEN
       Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'jobAdType json found';
@@ -497,7 +524,9 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
              t.Jobadstartdate    = To_Date(Jobadstartdate_t, 'DD MON YYYY'),
              t.Jobadenddate      = To_Date(Jobadenddate_t, 'DD MON YYYY'),
              t.Jobadpositionsnr  = Jobadpositionsnr_t,
-             t.Jobadapplicantsnr = Jobadapplicantsnr_t
+             t.Jobadapplicantsnr = Jobadapplicantsnr_t,
+             t.Jobadjsonhash     = Generatesha1fromjson(Injsonvar => Scrapy_Item)
+      
        WHERE t.Jobadid = Jobadid_Scr
          AND t.Companyid = Companyid_t
          AND t.Countryid = Countryid_t;
@@ -543,7 +572,8 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
        WHERE t.Jobadid = Jobadid_Scr
          AND t.Companyid = Companyid_t
          AND t.Countryid = Countryid_t;
-      Parse_Log_s := Parse_Log_s || SQLCODE || ' ' || SQLERRM || ' ' || Display_Error_Stack;
+      Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || SQLCODE || ' ' || SQLERRM || ' ' || Display_Error_Stack || Chr(13) ||
+                     Chr(10) || Display_Call_Stack;
       UPDATE t_Scrappedads t SET t.Parselog = Parse_Log_s, t.Parsed = 'X' WHERE t.Scrapeid = Scrapeid_t;
       COMMIT;
       Status := 1;
@@ -551,12 +581,13 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
   END Insertjobad;
 
   PROCEDURE Processnewjobads IS
-    l_Starttime BINARY_INTEGER;
-    l_Startdate DATE;
-    Parse_Log_t VARCHAR2(32767) := '';
-    Parsestate  NUMBER;
-    Insertstate NUMBER := 0;
-    Newjobadsnr NUMBER;
+    l_Starttime     BINARY_INTEGER;
+    l_Startdate     DATE;
+    Parse_Log_t     VARCHAR2(32767) := '';
+    Parsestate      NUMBER;
+    Insertstate     NUMBER := 0;
+    Newjobadsnr     NUMBER;
+    Jobadjsonhash_t VARCHAR2(180);
   BEGIN
   
     l_Starttime := Dbms_Utility.Get_Time;
@@ -579,7 +610,30 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
       LOOP
         IF i.Jsontypeid = 1
         THEN
-          Insertjobad(Scrapy_Item => i.Jobadjson, Scrapeid_t => i.Scrapeid);
+          --<  check sha1 hash of the jobAd  >--
+          BEGIN
+          
+            SELECT Coalesce(t.Jobadjsonhash, 'No Hash') INTO Jobadjsonhash_t FROM t_Jobad t WHERE t.Jobadid = i.Scrapeid;
+            IF (Generatesha1fromjson(Injsonvar => i.Jobadjson) <> Jobadjsonhash_t)
+            THEN
+              DELETE FROM t_Jobad t WHERE t.Jobadid = i.Scrapeid;
+              COMMIT;
+              Insertjobad(Scrapy_Item => i.Jobadjson, Scrapeid_t => i.Scrapeid);
+            ELSE
+              UPDATE t_Scrappedads t
+                 SET t.Parsed    = 'S',
+                     t.Parsetime = SYSDATE,
+                     t.Parselog  = t.Parselog || Chr(13) || Chr(10) || 'hash matches no need to parse'
+               WHERE t.Scrapeid = i.Scrapeid;
+              COMMIT;
+            END IF;
+          EXCEPTION
+            WHEN No_Data_Found THEN
+              Insertjobad(Scrapy_Item => i.Jobadjson, Scrapeid_t => i.Scrapeid);
+          END;
+        
+          --    Generatesha1fromjson(Injsonvar => ' test')
+          --</ check sha1 hash of the jobAd />--
         
         ELSE
           Dbms_Output.Put_Line('Parsing of the Specified JSON Type Source is not supported skipping');
@@ -607,7 +661,7 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
                                0,
                                'processNewJobAds',
                                'Exception cauth ' || To_Char(Newjobadsnr) || 'Not all job Ads parsed due to logged exception. ' ||
-                               Display_Error_Stack,
+                               Display_Error_Stack || Chr(13) || Chr(10) || Display_Call_Stack,
                                l_Starttime,
                                l_Startdate);
       ROLLBACK;

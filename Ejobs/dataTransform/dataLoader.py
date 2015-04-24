@@ -1,4 +1,4 @@
-
+import csv
 
 __author__ = 'AndreiTataru'
 
@@ -38,16 +38,52 @@ class OraLoad():
             print traceback.format_exc()
             self.connection.rollback()
 
-    def insertPayload2(self,payload,jobadlink):
+    def insertPayload2(self,payload,items):
         cursor = cx_Oracle.Cursor(self.connection)
-        ins_sql=('insert into T_SCRAPPEDADS (JOBADID,JOBADJSON,JSONTYPEID,PARSED,SCRAPESESSIONID) values (:1,:2,:3,:4,:5)')
+        ins_sql=('insert into T_EXPANDED_SCRAPPEDADS (scrapeid,sourceid,scrapesessionid,jobadjson,jobadtype,sourcepage,scrapedate,jobtitle,jobaddlink,companyname,tipjob,orase,nivelcariera,limbistraine,oferta,departament,industry,jobadstartdate,jobadexpiredate,nrjoburi,jobadapplicantsnr,jobaddescription,jobadselectioncriteria,jobaddescriptionimage,jobaddriverlicence ) values (:1,:2,:3,:4,:5,:6,:7,:8,:9,:10,:11,:12,:13,:14,:15,:16,:17,:18,:19,:20,:21,:22,:23,:24,:25)')
+
 
         try:
-            cursor.execute(ins_sql, (gensha1(jobadlink),payload,1,'N',1))
+            cursor.execute(ins_sql,( self.gensha1(items.get('JobAddLink')),1,1,payload,items.get('JobAdType'),items.get('SourcePage')
+                           ,items.get('ScrapeDate'),items.get('JobTitle'),items.get('JobAddLink'),items.get('CompanyName'),items.get('TipJob')
+                           ,items.get('Orase'),items.get('NivelCariera'),items.get('LimbiStraine'),items.get('Oferta'),items.get('Departament'),items.get('Industry')
+                           # ,datetime.strptime(items.get('JobAdStartDate'), "%Y-%m-%d %H:%M:%S"),datetime.strptime(items.get('JobAdExpireDate'), "%Y-%m-%d %H:%M:%S")
+                           ,items.get('JobAdStartDate'),items.get('JobAdExpireDate')
+                           ,items.get('NrJoburi'),items.get('JobAdApplicantsNr'),items.get('JobAdDescription'),items.get('JobAdSelectionCriteria'),items.get('JobAdDescriptionImage'),items.get('JobAdDriverLicence'))
+                           )
         except:
             print traceback.format_exc()
             self.connection.rollback()
 
+    def generatePayload(self,payload,items):
+
+        with open('t_expanded_scrapeads.csv', 'wb') as f:  # Just use 'w' mode in 3.x
+            w = csv.DictWriter(f,items.keys())
+            w.writeheader()
+            w.writerow(items)
+
+
+    def insertPayload3(self,payload,items):
+
+        cursor = cx_Oracle.Cursor(self.connection)
+        ins_sql=('insert into T_SCRAPPEDADS (SCRAPEID,JOBADJSON,JSONTYPEID,PARSED,SCRAPESESSIONID) values (:1,:2,:3,:4,:5)')
+
+        try:
+            cursor.execute(ins_sql, (self.gensha1(items['JobAddLink']),payload,1,'N',2))
+        except:
+            print traceback.format_exc()
+            self.connection.rollback()
+
+    def insertPayload4(self,payload,items):
+
+            cursor = cx_Oracle.Cursor(self.connection)
+            ins_sql=('insert into T_SCRAPPEDADS (SCRAPEID,JOBADJSON,JSONTYPEID,PARSED,SCRAPESESSIONID) values (:1,:2,:3,:4,:5)')
+
+            try:
+                cursor.execute(ins_sql, (self.gensha1(items['JobAddLink']),payload,2,'N',2))
+            except:
+                print traceback.format_exc()
+                self.connection.rollback()
 
 
     def testCon(self):
@@ -93,9 +129,21 @@ class RabbitmqConsumer():
 
         item = dict(m.decode()) 
         #self.oraClient.insertPayload(json.dumps(item))
-        self.oraClient.insertPayload2(json.dumps(item),item['JobAddLink'])
+        # self.oraClient.insertPayload3(json.dumps(item),item['JobAddLink'])
+
+
+        # self.oraClient.insertPayload3(json.dumps(item),item)
+        # or
+        self.oraClient.insertPayload4(json.dumps(item),item)
+
+
+
+
+
+
+        # self.oraClient.generatePayload(json.dumps(item),item)
         self.oraClient.connection.commit()
-        m.ack()
+        # m.ack()
         # for field, possible_values in item.iteritems():
         #    print field, possible_values
 

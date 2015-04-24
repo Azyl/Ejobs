@@ -25,9 +25,9 @@ AUTOTHROTTLE_START_DELAY = 5.0
 AUTOTHROTTLE_MAX_DELAY = 60.0
 AUTOTHROTTLE_DEBUG = True
 
-LOG_ENABLED = True
+# LOG_ENABLED = True
 LOG_LEVEL = 'DEBUG'
-LOG_FILE = 'Ejob.log'
+# LOG_FILE = 'Ejob.log'
 
 ITEM_PIPELINES = [
         'Ejobs.pipelines.MessageQueuePipeline',

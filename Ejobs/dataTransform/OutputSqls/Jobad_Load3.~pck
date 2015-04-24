@@ -147,380 +147,397 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
         --< country >--
         Countryid_t := 642;
         --toate anunturile sunt ale unor firme din Romania
-        --</ country />--   
-      
-        --< company >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'CompanyName');
-        Temp_s := REPLACE(Temp_s, ';');
-        IF (Temp_s IS NOT NULL)
+        --</ country />--
+      END IF;
+    ELSE
+      Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdType key not found = ';
+      Status      := 1;
+    END IF;
+    --< company >--
+  
+    IF (Status = 0)
+    THEN
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'CompanyName');
+      Temp_s := REPLACE(Temp_s, ';');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Companyid_t := Getcompanyid(Company_Name => Temp_s);
+        IF (Companyid_t IS NULL)
         THEN
-          Companyid_t := Getcompanyid(Company_Name => Temp_s);
-          IF (Companyid_t IS NULL)
-          THEN
-            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no company: ' || Temp_s || ' in database, inserting new company';
-            --insert into T_company
-            INSERT INTO t_Company (Companyname, Countryid) VALUES (Temp_s, Countryid_t);
-            COMMIT;
-            SELECT Companyid INTO Companyid_t FROM t_Company t WHERE t.Companyname = Temp_s;
-            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'new company: ' || 'company inserted: ' || Companyid_t;
-          END IF;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no CompanyName key found';
-          Status      := 1;
-        END IF;
-        --</ company />--   
-      
-        IF Companyid_t IS NOT NULL
-        THEN
-          --< jobAd initial insert >--
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'Inserting initial jobAd';
-          INSERT INTO t_Jobad (Jobadid, Companyid, Countryid) VALUES (Jobadid_Scr, Companyid_t, Countryid_t);
+          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no company: ' || Temp_s || ' in database, inserting new company';
+          --insert into T_company
+          INSERT INTO t_Company (Companyname, Countryid) VALUES (Temp_s, Countryid_t);
           COMMIT;
-          --</ jobAd initial insert />--
+          SELECT Companyid INTO Companyid_t FROM t_Company t WHERE t.Companyname = Temp_s;
+          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'new company: ' || 'company inserted: ' || Companyid_t;
         END IF;
-      
-        --< department >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'Departament');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Loop_Cnt := Regexp_Count(Temp_s, ';');
-          FOR Iter IN 1 .. Loop_Cnt
-          LOOP
-            Tempdata       := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
-            Departmentid_t := Getdepartmentid(Department_Name => Tempdata);
-            IF (Departmentid_t IS NOT NULL)
-            THEN
-              INSERT INTO t_Activejobadsdepartments
-                (Jobadid, Companyid, Countryid, Departmentid)
-              VALUES
-                (Jobadid_Scr, Companyid_t, Countryid_t, Departmentid_t);
-              COMMIT;
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_activeJobAdsDepartments';
-            ELSE
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'department does not exist check the master data';
-              Status      := 1;
-            END IF;
-            IF Iter < Loop_Cnt
-            THEN
-              Temp_s := REPLACE(Temp_s, Tempdata || ';');
-            END IF;
-          END LOOP;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no Departament key found';
-        END IF;
-        --</ department />--      
-      
-        --< jobType >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'TipJob');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Loop_Cnt := Regexp_Count(Temp_s, ';');
-          FOR Iter IN 1 .. Loop_Cnt
-          LOOP
-            Tempdata       := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
-            Departmentid_t := Getjobadtypeid(Jobadtype_Name => Tempdata);
-            IF (Departmentid_t IS NOT NULL)
-            THEN
-              INSERT INTO t_Jobadjobtype
-                (Jobadtypeid, Jobadid, Companyid, Countryid)
-              VALUES
-                (Jobadtypeid_t, Jobadid_Scr, Companyid_t, Countryid_t);
-              COMMIT;
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdJobType';
-            ELSE
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'TipJob does not exist check the master data';
-              Status      := 1;
-            END IF;
-            IF Iter < Loop_Cnt
-            THEN
-              Temp_s := REPLACE(Temp_s, Tempdata || ';');
-            END IF;
-          END LOOP;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no TipJob key found';
-        END IF;
-        --</ jobType />-- 
-      
-        --< careerLevel >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'NivelCariera');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Loop_Cnt := Regexp_Count(Temp_s, ';');
-          FOR Iter IN 1 .. Loop_Cnt
-          LOOP
-            Tempdata        := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
-            Careerlevelid_t := Getcareerlevelid(Careerlevel_Name => Tempdata);
-            IF (Departmentid_t IS NOT NULL)
-            THEN
-              INSERT INTO t_Jobadcareerlevel
-                (Careerlevelid, Jobadid, Companyid, Countryid)
-              VALUES
-                (Careerlevelid_t, Jobadid_Scr, Companyid_t, Countryid_t);
-              COMMIT;
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdCareerLevel';
-            ELSE
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'NivelCariera does not exist check the master data';
-              Status      := 1;
-            END IF;
-            IF Iter < Loop_Cnt
-            THEN
-              Temp_s := REPLACE(Temp_s, Tempdata || ';');
-            END IF;
-          END LOOP;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no NivelCariera key found';
-        END IF;
-        --</ careerlevel />--
-      
-        --< driverLicence >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdDriverLicence');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Loop_Cnt := Regexp_Count(Temp_s, ';');
-          FOR Iter IN 1 .. Loop_Cnt
-          LOOP
-            Tempdata          := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
-            Driverlicenceid_t := Getdriverlicenceid(Driverlicence_Name => Tempdata);
-            IF (Departmentid_t IS NOT NULL)
-            THEN
-              INSERT INTO t_Jobaddriverlicence
-                (Driverlicenceid, Jobadid, Companyid, Countryid)
-              VALUES
-                (Driverlicenceid_t, Jobadid_Scr, Companyid_t, Countryid_t);
-              COMMIT;
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdDriverLicence';
-            ELSE
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'driverLicence does not exist check the master data';
-              Status      := 1;
-            END IF;
-            IF Iter < Loop_Cnt
-            THEN
-              Temp_s := REPLACE(Temp_s, Tempdata || ';');
-            END IF;
-          END LOOP;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no driverLicence key found';
-        END IF;
-        --</ driverLicence />--      
-      
-        --< language >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'LimbiStraine');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Loop_Cnt := Regexp_Count(Temp_s, ';');
-          FOR Iter IN 1 .. Loop_Cnt
-          LOOP
-            Tempdata     := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
-            Languageid_t := Getlanguageid(Language_Name => Tempdata);
-            IF (Languageid_t IS NOT NULL)
-            THEN
-              INSERT INTO t_Jobadlanguage
-                (Languageid, Jobadid, Companyid, Countryid)
-              VALUES
-                (Languageid_t, Jobadid_Scr, Companyid_t, Countryid_t);
-              COMMIT;
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdLanguage';
-            ELSE
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'LimbiStraine does not exist check the master data';
-              Status      := 1;
-            END IF;
-            IF Iter < Loop_Cnt
-            THEN
-              Temp_s := REPLACE(Temp_s, Tempdata || ';');
-            END IF;
-          END LOOP;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no LimbiStraine key found';
-        END IF;
-        --</ language />--      
-      
-        --< industry >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'Industry');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Loop_Cnt := Regexp_Count(Temp_s, ';');
-          FOR Iter IN 1 .. Loop_Cnt
-          LOOP
-            Tempdata     := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
-            Industryid_t := Getindustryid(Industry_Name => Tempdata);
-            IF (Departmentid_t IS NOT NULL)
-            THEN
-              INSERT INTO t_Jobadindustry
-                (Industryid, Jobadid, Companyid, Countryid)
-              VALUES
-                (Industryid_t, Jobadid_Scr, Companyid_t, Countryid_t);
-              COMMIT;
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdLanguage';
-            ELSE
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'Industry does not exist check the master data';
-              Status      := 1;
-            END IF;
-            IF Iter < Loop_Cnt
-            THEN
-              Temp_s := REPLACE(Temp_s, Tempdata || ';');
-            END IF;
-          END LOOP;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no Industry key found';
-        END IF;
-        --</ industry />--
-      
-        --< city >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'Orase');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Loop_Cnt := Regexp_Count(Temp_s, ';');
-          FOR Iter IN 1 .. Loop_Cnt
-          LOOP
-            Tempdata := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
-            Temp_S2  := Getcityid(City_Name => Tempdata);
-            IF (Temp_S2 IS NOT NULL)
-            THEN
-              Cityid_t   := Substr(Temp_S2, 1, Instr(Temp_S2, ';') - 1);
-              Countyid_t := Substr(Temp_S2, Instr(Temp_S2, ';') + 1);
-              INSERT INTO t_Jobadcity
-                (Jobadid, Companyid, Countryid, Cityid, Countyid)
-              VALUES
-                (Jobadid_Scr, Companyid_t, Countryid_t, Cityid_t, Countyid_t);
-              COMMIT;
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdcity';
-            ELSE
-              Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'Orase does not exist check the master data';
-              Status      := 1;
-            END IF;
-            IF Iter < Loop_Cnt
-            THEN
-              Temp_s := REPLACE(Temp_s, Tempdata || ';');
-            END IF;
-          END LOOP;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no Orase key found';
-        END IF;
-        --</ city />--  
-      
-        --<< update JobAd >>--
-      
-        --< jobAdTitle >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobTitle');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Jobtitle_t  := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'JobTitle: ' || Jobtitle_t;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobTitle key found';
-        END IF;
-        --</ jobAdTitle />--
-      
-        --< jobAdStartDate >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdStartDate');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Jobadstartdate_t := Temp_s;
-          BEGIN
-            Tdate := To_Date(Jobadstartdate_t, 'DD MON YYYY');
-          EXCEPTION
-            WHEN OTHERS THEN
-              Jobadstartdate_t := To_Char(SYSDATE, 'DD MON YYYY');
-          END;
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdStartDate: ' || Jobadstartdate_t;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobAdStartDate key found';
-        END IF;
-        --</ jobAdStartDate />--
-      
-        --< jobAdEndDate >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdExpireDate');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Jobadenddate_t := Temp_s;
-          BEGIN
-            Tdate := To_Date(Jobadstartdate_t, 'DD MON YYYY');
-          EXCEPTION
-            WHEN OTHERS THEN
-              Jobadenddate_t := To_Char(SYSDATE + 7, 'DD MON YYYY');
-          END;
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdExpireDate: ' || Jobadenddate_t;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobAdExpireDate key found';
-        END IF;
-        --</ jobAdEndDate />--
-      
-        --< jobadpositionsnr >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'NrJoburi');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Jobadpositionsnr_t := Temp_s;
-          Jobadpositionsnr_t := TRIM(REPLACE(REPLACE(Jobadpositionsnr_t, Chr(10)), Chr(13)));
-          Parse_Log_s        := Parse_Log_s || Chr(13) || Chr(10) || 'NrJoburi: ' || Jobadpositionsnr_t;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no NrJoburi key found';
-        END IF;
-        --</ jobadpositionsnr />--
-      
-        --< Jobadapplicantsnr >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdApplicantsNr');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Jobadapplicantsnr_t := Temp_s;
-          Jobadapplicantsnr_t := TRIM(REPLACE(REPLACE(Jobadapplicantsnr_t, Chr(10)), Chr(13)));
-          Parse_Log_s         := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdApplicantsNr: ' || Jobadapplicantsnr_t;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobAdApplicantsNr key found';
-        END IF;
-        --</ Jobadapplicantsnr />--
-      
-        --< JobAdDescription >--
-        Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdDescription');
-        IF (Temp_s IS NOT NULL)
-        THEN
-          Jobaddescription_t := Temp_s;
-          Parse_Log_s        := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdDescription: ' || Jobadapplicantsnr_t;
-        ELSE
-          Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobAdDescription key found';
-        END IF;
-        --</ JobAdDescription />--
-      
-        --updating T_jobAd
-        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'updating JOB AD: ' || Jobadid_Scr || ' ' || Companyid_t || ' ' ||
-                       Countryid_t;
-      
-        UPDATE t_Jobad t
-           SET t.Jobtitle          = Jobtitle_t,
-               t.Jobaddescription  = Jobaddescription_t,
-               t.Jobadstartdate    = To_Date(Jobadstartdate_t, 'DD MON YYYY'),
-               t.Jobadenddate      = To_Date(Jobadenddate_t, 'DD MON YYYY'),
-               t.Jobadpositionsnr  = Jobadpositionsnr_t,
-               t.Jobadapplicantsnr = Jobadapplicantsnr_t
-         WHERE t.Jobadid = Jobadid_Scr
-           AND t.Companyid = Companyid_t
-           AND t.Countryid = Countryid_t;
-        COMMIT;
-      
-        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'updated tjobad jobadid: ' || Jobadid_Scr;
-        --<</ update jobAd />>--
-      
       ELSE
-        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) ||
-                       'JobAdType not 1 No proceding to flag the jobAd for a diferent type of processing';
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no CompanyName key found';
         Status      := 1;
       END IF;
-    
     END IF;
+    --</ company />--   
+  
+    IF Companyid_t IS NOT NULL
+    THEN
+      --< jobAd initial insert >--
+      Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'Inserting initial jobAd';
+      INSERT INTO t_Jobad (Jobadid, Companyid, Countryid) VALUES (Jobadid_Scr, Companyid_t, Countryid_t);
+      COMMIT;
+      --</ jobAd initial insert />--
+    
+      --< department >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'Departament');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Loop_Cnt := Regexp_Count(Temp_s, ';');
+        FOR Iter IN 1 .. Loop_Cnt
+        LOOP
+          Tempdata       := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
+          Departmentid_t := Getdepartmentid(Department_Name => Tempdata);
+          IF (Departmentid_t IS NOT NULL)
+          THEN
+            INSERT INTO t_Activejobadsdepartments
+              (Jobadid, Companyid, Countryid, Departmentid)
+            VALUES
+              (Jobadid_Scr, Companyid_t, Countryid_t, Departmentid_t);
+            COMMIT;
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_activeJobAdsDepartments';
+          ELSE
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'department does not exist check the master data';
+            Status      := 1;
+          END IF;
+          IF Iter < Loop_Cnt
+          THEN
+            Temp_s := REPLACE(Temp_s, Tempdata || ';');
+          END IF;
+        END LOOP;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no Departament key found';
+      END IF;
+      --</ department />--      
+    
+      --< jobType >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'TipJob');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Loop_Cnt := Regexp_Count(Temp_s, ';');
+        FOR Iter IN 1 .. Loop_Cnt
+        LOOP
+          Tempdata      := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
+          Jobadtypeid_t := Getjobadtypeid(Jobadtype_Name => Tempdata);
+          IF (Jobadtypeid_t IS NOT NULL)
+          THEN
+            INSERT INTO t_Jobadjobtype
+              (Jobadtypeid, Jobadid, Companyid, Countryid)
+            VALUES
+              (Jobadtypeid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+            COMMIT;
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdJobType';
+          ELSE
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'TipJob does not exist check the master data';
+            Status      := 1;
+          END IF;
+          IF Iter < Loop_Cnt
+          THEN
+            Temp_s := REPLACE(Temp_s, Tempdata || ';');
+          END IF;
+        END LOOP;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no TipJob key found';
+      END IF;
+      --</ jobType />-- 
+    
+      --< careerLevel >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'NivelCariera');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Loop_Cnt := Regexp_Count(Temp_s, ';');
+        FOR Iter IN 1 .. Loop_Cnt
+        LOOP
+          Tempdata        := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
+          Careerlevelid_t := Getcareerlevelid(Careerlevel_Name => Tempdata);
+          IF (Careerlevelid_t IS NOT NULL)
+          THEN
+            INSERT INTO t_Jobadcareerlevel
+              (Careerlevelid, Jobadid, Companyid, Countryid)
+            VALUES
+              (Careerlevelid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+            COMMIT;
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdCareerLevel';
+          ELSE
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'NivelCariera does not exist check the master data';
+            Status      := 1;
+          END IF;
+          IF Iter < Loop_Cnt
+          THEN
+            Temp_s := REPLACE(Temp_s, Tempdata || ';');
+          END IF;
+        END LOOP;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no NivelCariera key found';
+      END IF;
+      --</ careerlevel />--
+    
+      --< driverLicence >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdDriverLicence');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Loop_Cnt := Regexp_Count(Temp_s, ';');
+        FOR Iter IN 1 .. Loop_Cnt
+        LOOP
+          Tempdata          := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
+          Driverlicenceid_t := Getdriverlicenceid(Driverlicence_Name => Tempdata);
+          IF (Driverlicenceid_t IS NOT NULL)
+          THEN
+            INSERT INTO t_Jobaddriverlicence
+              (Driverlicenceid, Jobadid, Companyid, Countryid)
+            VALUES
+              (Driverlicenceid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+            COMMIT;
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdDriverLicence';
+          ELSE
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'driverLicence does not exist check the master data';
+            Status      := 1;
+          END IF;
+          IF Iter < Loop_Cnt
+          THEN
+            Temp_s := REPLACE(Temp_s, Tempdata || ';');
+          END IF;
+        END LOOP;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no driverLicence key found';
+      END IF;
+      --</ driverLicence />--      
+    
+      --< language >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'LimbiStraine');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Loop_Cnt := Regexp_Count(Temp_s, ';');
+        FOR Iter IN 1 .. Loop_Cnt
+        LOOP
+          Tempdata     := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
+          Languageid_t := Getlanguageid(Language_Name => Tempdata);
+          IF (Languageid_t IS NOT NULL)
+          THEN
+            INSERT INTO t_Jobadlanguage
+              (Languageid, Jobadid, Companyid, Countryid)
+            VALUES
+              (Languageid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+            COMMIT;
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdLanguage';
+          ELSE
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'LimbiStraine does not exist check the master data';
+            Status      := 1;
+          END IF;
+          IF Iter < Loop_Cnt
+          THEN
+            Temp_s := REPLACE(Temp_s, Tempdata || ';');
+          END IF;
+        END LOOP;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no LimbiStraine key found';
+      END IF;
+      --</ language />--      
+    
+      --< industry >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'Industry');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Loop_Cnt := Regexp_Count(Temp_s, ';');
+        FOR Iter IN 1 .. Loop_Cnt
+        LOOP
+          Tempdata     := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
+          Industryid_t := Getindustryid(Industry_Name => Tempdata);
+          IF (Industryid_t IS NOT NULL)
+          THEN
+            INSERT INTO t_Jobadindustry
+              (Industryid, Jobadid, Companyid, Countryid)
+            VALUES
+              (Industryid_t, Jobadid_Scr, Companyid_t, Countryid_t);
+            COMMIT;
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdLanguage';
+          ELSE
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'Industry does not exist check the master data';
+            Status      := 1;
+          END IF;
+          IF Iter < Loop_Cnt
+          THEN
+            Temp_s := REPLACE(Temp_s, Tempdata || ';');
+          END IF;
+        END LOOP;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no Industry key found';
+      END IF;
+      --</ industry />--
+    
+      --< city >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'Orase');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Loop_Cnt := Regexp_Count(Temp_s, ';');
+        FOR Iter IN 1 .. Loop_Cnt
+        LOOP
+          Tempdata := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
+          Temp_S2  := Getcityid(City_Name => Tempdata);
+          IF (Temp_S2 IS NOT NULL)
+          THEN
+            Cityid_t   := Substr(Temp_S2, 1, Instr(Temp_S2, ';') - 1);
+            Countyid_t := Substr(Temp_S2, Instr(Temp_S2, ';') + 1);
+            INSERT INTO t_Jobadcity
+              (Jobadid, Companyid, Countryid, Cityid, Countyid)
+            VALUES
+              (Jobadid_Scr, Companyid_t, Countryid_t, Cityid_t, Countyid_t);
+            COMMIT;
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'inserted into T_jobAdcity';
+          ELSE
+            Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'Orase does not exist check the master data';
+            Status      := 1;
+          END IF;
+          IF Iter < Loop_Cnt
+          THEN
+            Temp_s := REPLACE(Temp_s, Tempdata || ';');
+          END IF;
+        END LOOP;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no Orase key found';
+      END IF;
+      --</ city />--  
+    
+      --<< update JobAd >>--
+    
+      --< jobAdTitle >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobTitle');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Jobtitle_t  := Substr(Temp_s, 0, Instr(Temp_s, ';') - 1);
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'JobTitle: ' || Jobtitle_t;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobTitle key found';
+      END IF;
+      --</ jobAdTitle />--
+    
+      --< jobAdStartDate >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdStartDate');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Jobadstartdate_t := Temp_s;
+        BEGIN
+          Tdate := To_Date(Jobadstartdate_t, 'DD MON YYYY');
+        EXCEPTION
+          WHEN OTHERS THEN
+            Jobadstartdate_t := To_Char(SYSDATE, 'DD MON YYYY');
+        END;
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdStartDate: ' || Jobadstartdate_t;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobAdStartDate key found';
+      END IF;
+      --</ jobAdStartDate />--
+    
+      --< jobAdEndDate >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdExpireDate');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Jobadenddate_t := Temp_s;
+        BEGIN
+          Tdate := To_Date(Jobadenddate_t, 'DD MON YYYY');
+        EXCEPTION
+          WHEN OTHERS THEN
+            Jobadenddate_t := To_Char(SYSDATE + 7, 'DD MON YYYY');
+        END;
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdExpireDate: ' || Jobadenddate_t;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobAdExpireDate key found';
+      END IF;
+      --</ jobAdEndDate />--
+    
+      --< jobadpositionsnr >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'NrJoburi');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Jobadpositionsnr_t := Temp_s;
+        Jobadpositionsnr_t := TRIM(REPLACE(REPLACE(Jobadpositionsnr_t, Chr(10)), Chr(13)));
+        Parse_Log_s        := Parse_Log_s || Chr(13) || Chr(10) || 'NrJoburi: ' || Jobadpositionsnr_t;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no NrJoburi key found';
+      END IF;
+      --</ jobadpositionsnr />--
+    
+      --< Jobadapplicantsnr >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdApplicantsNr');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Jobadapplicantsnr_t := Temp_s;
+        Jobadapplicantsnr_t := TRIM(REPLACE(REPLACE(Jobadapplicantsnr_t, Chr(10)), Chr(13)));
+        Parse_Log_s         := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdApplicantsNr: ' || Jobadapplicantsnr_t;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobAdApplicantsNr key found';
+      END IF;
+      --</ Jobadapplicantsnr />--
+    
+      --< JobAdDescription >--
+      Temp_s := Getjsonvalue(Jsonstring => Scrapy_Item, Sparam => 'JobAdDescription');
+      IF (Temp_s IS NOT NULL)
+      THEN
+        Jobaddescription_t := Temp_s;
+        Parse_Log_s        := Parse_Log_s || Chr(13) || Chr(10) || 'JobAdDescription: ' || Jobaddescription_t;
+      ELSE
+        Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'no JobAdDescription key found';
+      END IF;
+      --</ JobAdDescription />--
+    
+      --updating T_jobAd
+      Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'updating JOB AD: ' || Jobadid_Scr || ' ' || Companyid_t || ' ' ||
+                     Countryid_t;
+    
+      UPDATE t_Jobad t
+         SET t.Jobtitle          = Jobtitle_t,
+             t.Jobaddescription  = Jobaddescription_t,
+             t.Jobadstartdate    = To_Date(Jobadstartdate_t, 'DD MON YYYY'),
+             t.Jobadenddate      = To_Date(Jobadenddate_t, 'DD MON YYYY'),
+             t.Jobadpositionsnr  = Jobadpositionsnr_t,
+             t.Jobadapplicantsnr = Jobadapplicantsnr_t
+       WHERE t.Jobadid = Jobadid_Scr
+         AND t.Companyid = Companyid_t
+         AND t.Countryid = Countryid_t;
+      COMMIT;
+    
+      Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) || 'updated tjobad jobadid: ' || Jobadid_Scr;
+      --<</ update jobAd />>--
+    
+    ELSE
+      Parse_Log_s := Parse_Log_s || Chr(13) || Chr(10) ||
+                     'JobAdType not 1 No proceding to flag the jobAd for a diferent type of processing';
+      Status      := 2;
+    END IF;
+  
+    -- END IF;
   
     IF Status = 0
     THEN
       UPDATE t_Scrappedads t SET t.Parselog = Parse_Log_s, t.Parsed = 'Y' WHERE t.Scrapeid = Scrapeid_t;
+    
+    ELSIF Status = 2
+    THEN
+      UPDATE t_Scrappedads t SET t.Parselog = Parse_Log_s, t.Parsed = 'Z' WHERE t.Scrapeid = Scrapeid_t;
+      DELETE FROM t_Jobad t
+       WHERE t.Jobadid = Jobadid_Scr
+         AND t.Companyid = Companyid_t
+         AND t.Countryid = Countryid_t;
+    
     ELSE
       UPDATE t_Scrappedads t SET t.Parselog = Parse_Log_s, t.Parsed = 'E' WHERE t.Scrapeid = Scrapeid_t;
       DELETE FROM t_Jobad t
        WHERE t.Jobadid = Jobadid_Scr
          AND t.Companyid = Companyid_t
          AND t.Countryid = Countryid_t;
+    
     END IF;
   
     COMMIT;
   
-    /*  EXCEPTION
+  EXCEPTION
     WHEN OTHERS THEN
       DELETE FROM t_Jobad t
        WHERE t.Jobadid = Jobadid_Scr
@@ -529,8 +546,8 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
       Parse_Log_s := Parse_Log_s || SQLCODE || ' ' || SQLERRM || ' ' || Display_Error_Stack;
       UPDATE t_Scrappedads t SET t.Parselog = Parse_Log_s, t.Parsed = 'X' WHERE t.Scrapeid = Scrapeid_t;
       COMMIT;
-      Status := 1;*/
-  
+      Status := 1;
+    
   END Insertjobad;
 
   PROCEDURE Processnewjobads IS
@@ -570,6 +587,8 @@ CREATE OR REPLACE PACKAGE BODY Jobad_Load IS
           COMMIT;
         END IF;
       END LOOP;
+    
+      Jobad_Util.Gather_Schema_Stats;
     
       Pr_Log_Job_Message_Success(0,
                                  0,

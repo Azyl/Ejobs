@@ -121,7 +121,7 @@ class BestjobSpiderFull(scrapy.Spider,):
 
         item['JobAdDescription'] = response.xpath(".//*[@class='jd-main-job clearfix']//*[@class='jd-body'][1]").extract()
 
-            
+
 
 
         #    if response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/a"):
@@ -129,7 +129,7 @@ class BestjobSpiderFull(scrapy.Spider,):
         #    else:
         #        item['CompanyName'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[2]/div[1]/div[1]/div[2]/text()").extract()
 
-        
+
         #    if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='educationRequirements']"):
         #        item['NivelCariera'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='educationRequirements']/li/text()").extract()
 
@@ -148,9 +148,9 @@ class BestjobSpiderFull(scrapy.Spider,):
         #    if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='department']"):
         #        item['Departament'] = response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/ul[@itemprop='department']/li/a/text()").extract()
 
-       
+
         #    item['JobAdDescription'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[4]/div[1]/p").extract()
-        
+
         #    item['JobAdSelectionCriteria'] = response.xpath(".//*[@id='job-page-left']/div[3]/div[1]/div[3]/ul/li/text()").extract()
 
         #    if response.xpath(".//*[@id='job-page-left']/div/div/div/div/div/*[contains(text(),'Driving')]"):
