@@ -32,6 +32,7 @@ class EjobsJobAdscrapperItem(scrapy.Item):
     JobAdDescriptionImage = scrapy.Field()
     JobAdDriverLicence = scrapy.Field()
 
+
     # 1 normal Ejobs text add
     # 2 picture custom picture add
     JobAdType = scrapy.Field()
