@@ -69,7 +69,7 @@ class OraLoad():
         ins_sql=('insert into T_SCRAPPEDADS (SCRAPEID,JOBADJSON,JSONTYPEID,PARSED,SCRAPESESSIONID) values (:1,:2,:3,:4,:5)')
 
         try:
-            cursor.execute(ins_sql, (self.gensha1(items['JobAddLink']),payload,1,'N',2))
+            cursor.execute(ins_sql, (self.gensha1(items['JobAddLink'][0]),payload,1,'N',1))
         except:
             print traceback.format_exc()
             self.connection.rollback()
@@ -131,10 +131,10 @@ class RabbitmqConsumer():
         #self.oraClient.insertPayload(json.dumps(item))
         # self.oraClient.insertPayload3(json.dumps(item),item['JobAddLink'])
 
-
-        # self.oraClient.insertPayload3(json.dumps(item),item)
-        # or
-        self.oraClient.insertPayload4(json.dumps(item),item)
+        # for ejobs
+        self.oraClient.insertPayload3(json.dumps(item),item)
+        # or for bestjobs
+        # self.oraClient.insertPayload4(json.dumps(item),item)
 
 
 
